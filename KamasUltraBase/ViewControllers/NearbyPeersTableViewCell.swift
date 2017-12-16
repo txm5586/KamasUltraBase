@@ -11,6 +11,7 @@ import MultipeerConnectivity
 
 class NearbyPeersTableViewCell: UITableViewCell {
     var peerID: MCPeerID!
+    
     @IBOutlet weak var peerNameLabel: UILabel!
     @IBOutlet weak var stateLabel: UILabel!
     

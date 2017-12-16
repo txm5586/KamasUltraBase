@@ -16,9 +16,6 @@ class PlayViewController: UIViewController {
         super.viewDidLoad()
         appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.ppService.delegate = self
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.receivedData(notification:)),
-                                               name:Notifications.MPCReceiveData, object: nil);
         // Do any additional setup after loading the view.
     }
 
@@ -30,12 +27,6 @@ class PlayViewController: UIViewController {
     @IBAction func tappedChangeBack(_ sender: Any) {
         self.appDelegate.ppService.send(dataInfo: "Any")
     }
-    
-    @objc func receivedData(notification: NSNotification) {
-        self.view.backgroundColor = UIColor.green
-    }
-    
-    
 
     /*
     // MARK: - Navigation
@@ -54,8 +45,8 @@ extension PlayViewController : PPHandlerDelegate {
         
     }
     
-    func pphandler(advertiser manager: PPHandler, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: (Bool, MCSession?)) {
-        
+    func pphandler(advertiser manager: PPHandler, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
+        invitationHandler(true, manager.session)
     }
     
     func pphandler(browser manager: PPHandler, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
@@ -63,7 +54,11 @@ extension PlayViewController : PPHandlerDelegate {
     }
     
     func pphandler(session manager: PPHandler, didReceived data: Data, fromPeer peerID: MCPeerID) {
-        
+        print("            ##### ##### ##### OK THIS LOOKS RIGHT")
+        NSLog("%@", "didWentToChangeBackground: \(data)")
+        OperationQueue.main.addOperation {
+            self.view.backgroundColor = UIColor.purple
+        }
     }
     
     func pphandler(browser manager: PPHandler, lostPeer peerID: MCPeerID) {

@@ -155,12 +155,13 @@ extension MPCHandler : MCSessionDelegate {
         //self.delegate?.sendData(manager: self)
         return
         
+        /*
         let userInfo = ["peerID": peerID] as [String : Any]
         
         DispatchQueue.main.async {
             NotificationCenter.default.post(
                 name: Notifications.MPCReceiveData, object: nil, userInfo: userInfo)
-        }
+        }*/
     }
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {

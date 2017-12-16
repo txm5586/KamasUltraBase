@@ -157,7 +157,11 @@
                                 <action selector="cancelTapped:" destination="8YZ-TM-SMT" id="MmQ-L1-XRw"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="MVl-MG-P5a"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="MVl-MG-P5a">
+                            <connections>
+                                <action selector="doneTapped:" destination="8YZ-TM-SMT" id="6sm-0n-C9y"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="cancelButtonItem" destination="pkY-9j-j8G" id="ncf-jf-rWh"/>
@@ -166,7 +170,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cFR-0c-spO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="517.60000000000002" y="818.14092953523243"/>
+            <point key="canvasLocation" x="620" y="819"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Jkd-Tp-Pds">
