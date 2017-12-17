@@ -39,6 +39,7 @@ public class Notifications {
     static let MPCDidReceiveInvitationFromPeer = NSNotification.Name("MPC_DidReceiveInvitationFromPeerNotification")
     static let MPCDidChangeState = NSNotification.Name("MPC_DidChangeStateNotification")
     static let MPCDidReceiveData = NSNotification.Name("MPC_ReceiveDataNotification")
+    static let UpdateConnectedStatus = NSNotification.Name("UpdateConnectedStateNotification")
     
     static let keyPeerID = "peerID"
     static let keyState = "state"

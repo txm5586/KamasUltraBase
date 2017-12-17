@@ -5,15 +5,6 @@
 import Foundation
 import MultipeerConnectivity
 
-// MARK: Protocol
-protocol PPHandlerDelegate {
-    func pphandler(browser manager : PPHandler, foundPeer peerID : MCPeerID, withDiscoveryInfo info: [String : String]?)
-    func pphandler(browser manager : PPHandler, lostPeer peerID: MCPeerID)
-    func pphandler(advertiser manager : PPHandler, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void)
-    func pphandler(session manager : PPHandler, didReceived data: Data, fromPeer peerID: MCPeerID)
-    func pphandler(session manager : PPHandler, didChange state: MCSessionState, peer peerID: MCPeerID)
-}
-
 class PPHandler : NSObject {
     // MARK: Properties
     private let serviceType = "kamasultraapp"
@@ -22,8 +13,6 @@ class PPHandler : NSObject {
     
     private let serviceAdvertiser : MCNearbyServiceAdvertiser
     private let serviceBrowser : MCNearbyServiceBrowser
-    
-    var delegate : PPHandlerDelegate?
     
     lazy var session : MCSession = {
         let session = MCSession(peer: self.myPeerId, securityIdentity: nil, encryptionPreference: .required)
@@ -76,14 +65,41 @@ class PPHandler : NSObject {
             
             alert.addAction(UIAlertAction(title: "Accept", style: .default, handler: { _ in
                 invitationHandler(true, self.session)
+                Global.shared.connectedPeer = peerID
+                DispatchQueue.main.async { NotificationCenter.default.post(name: Notifications.UpdateConnectedStatus, object: nil, userInfo: nil) }
             }))
             
             alert.addAction(UIAlertAction(title: "Refuse", style:.cancel, handler: { _ in
                 invitationHandler(false, self.session)
             }))
             
-            UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
+            presentAtTopViewController(view: alert)
         }
+    }
+    
+    func lostConnectionAlert(peerID: MCPeerID) {
+        let alert = UIAlertController(title: "Lost connection", message: "\(peerID.displayName) disconnected", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            DispatchQueue.main.async { NotificationCenter.default.post(name: Notifications.UpdateConnectedStatus, object: nil, userInfo: nil) }
+        }))
+        
+        presentAtTopViewController(view: alert)
+    }
+    
+    func presentAtTopViewController(view: UIViewController) {
+        if var topController = UIApplication.shared.keyWindow?.rootViewController {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+            
+            // topController should now be your topmost view controller
+            topController.present(view, animated: true, completion: nil)
+        }
+    }
+    
+    func disconnectPeer() {
+        self.session.disconnect()
+        Global.shared.connectedPeer = nil
     }
     
 }
@@ -97,7 +113,6 @@ extension PPHandler : MCNearbyServiceAdvertiserDelegate {
     
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         NSLog("%@", "didReceiveInvitationFromPeer \(peerID)")
-        //invitationHandler(true, self.session)
         self.receivedInvitationAlert(peerID: peerID, invitationHandler: invitationHandler)
     }
     
@@ -112,13 +127,10 @@ extension PPHandler : MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         NSLog("%@", "foundPeer: \(peerID)")
-        //browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
-        
         let isPeerOnList = Global.shared.peers.contains(where: { $0.peerID == peerID })
         
         if !isPeerOnList {
             Global.shared.peers.append(Peer(peerID: peerID))
-            //self.delegate?.pphandler(browser: self, foundPeer: peerID, withDiscoveryInfo: info)
             // Send Notification
             DispatchQueue.main.async { NotificationCenter.default.post(name: Notifications.MPCFoundPeer, object: nil, userInfo: nil) }
         }
@@ -127,7 +139,8 @@ extension PPHandler : MCNearbyServiceBrowserDelegate {
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         NSLog("%@", "lostPeer: \(peerID)")
         
-        let allPeersButLostOne = Global.shared.peers.filter({$0.peerID == peerID})
+        
+        let allPeersButLostOne = Global.shared.peers.filter({$0.peerID != peerID})
         Global.shared.peers = allPeersButLostOne
         
         if let cp = Global.shared.connectedPeer, cp == peerID {
@@ -136,7 +149,6 @@ extension PPHandler : MCNearbyServiceBrowserDelegate {
             Global.shared.connectingPeer = nil
         }
         
-        //self.delegate?.pphandler(browser: self, lostPeer: peerID)
         DispatchQueue.main.async { NotificationCenter.default.post(name: Notifications.MPCLostPeer, object: nil, userInfo: nil) }
     }
     
@@ -149,9 +161,15 @@ extension PPHandler : MCSessionDelegate {
         NSLog("%@", "peer \(peerID) didChangeState: \(state.rawValue)")
         
         Global.shared.connectingPeer = nil
-        Global.shared.connectedPeer = session.connectedPeers.first
         
-        //self.delegate?.pphandler(session: self, didChange: state, peer: peerID)
+        if state == MCSessionState.connected {
+            Global.shared.connectedPeer = peerID
+        } else if state == MCSessionState.notConnected, peerID == Global.shared.connectedPeer {
+            Global.shared.connectedPeer = nil
+            
+            // Alert lost connection
+            self.lostConnectionAlert(peerID: peerID)
+        }
         
         let userInfo = [Notifications.keyPeerID : peerID, Notifications.keyState : state.rawValue] as [String : Any]
         DispatchQueue.main.async { NotificationCenter.default.post(name: Notifications.MPCDidChangeState, object: nil, userInfo: userInfo) }
@@ -159,8 +177,6 @@ extension PPHandler : MCSessionDelegate {
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         NSLog("%@", "didReceiveData: \(data)")
-        
-        //self.delegate?.pphandler(session: self, didReceived: data, fromPeer: peerID)
         
         let str = String(data: data, encoding: .utf8)!
         let userInfo = [Notifications.keyPeerID : peerID, Notifications.keyData : str] as [String : Any]

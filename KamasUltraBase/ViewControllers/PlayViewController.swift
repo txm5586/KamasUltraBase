@@ -12,19 +12,77 @@ import MultipeerConnectivity
 class PlayViewController: UIViewController {
     private var appDelegate: AppDelegate!
     
+    
+    @IBOutlet weak var playButtonView: UIView!
+    @IBOutlet weak var playButton: UIButton!
+    
+    @IBOutlet weak var connectButton: UIButton!
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        verifyConnectedState()
+        setButtonsTranformation()
+        setGradientBackground()
+    }
+    
+    func verifyConnectedState() {
+        if let peer = Global.shared.connectedPeer {
+            connectButton.setTitle("Playing with \(peer.displayName)", for: .normal)
+        } else {
+            connectButton.setTitle("Connect", for: .normal)
+        }
+    }
+    
+    func setButtonsTranformation() {
+        playButtonView.backgroundColor = UIColor.white
+        playButtonView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 0.25)
+        playButton.transform = CGAffineTransform(rotationAngle: -CGFloat.pi * 0.25)
+        
+        playButtonView.layer.shadowColor = UIColor.black.cgColor
+        playButtonView.layer.shadowOpacity = 1
+        playButtonView.layer.shadowOffset = CGSize.zero
+        playButtonView.layer.shadowRadius = 10
+        
+        connectButton.titleLabel?.textColor = UIColor.white
+        connectButton.layer.shadowColor = UIColor.black.cgColor
+        connectButton.layer.shadowOpacity = 1
+        connectButton.layer.shadowOffset = CGSize.zero
+        connectButton.layer.shadowRadius = 10
+    }
+    
+    func setGradientBackground() {
+        let colorTop =  UIColor(red: 252.0/255.0, green: 70.0/255.0, blue: 107.0/255.0, alpha: 1.0).cgColor
+        let colorBottom = UIColor(red: 63.0/255.0, green: 94.0/255.0, blue: 251.0/255.0, alpha: 1.0).cgColor
+        
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [ colorTop, colorBottom]
+        gradientLayer.locations = [ 0.0, 1.0]
+        gradientLayer.frame = self.view.bounds
+        
+        self.view.layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.ppService.delegate = self
-        // Do any additional setup after loading the view.
         
+        self.navigationController?.isNavigationBarHidden = true
+        
+        // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.didReceiveData(notification:)), name:Notifications.MPCDidReceiveData, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.updateConnectedStatus(notification:)), name:Notifications.UpdateConnectedStatus, object: nil);
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        return true
     }
     
     // MARK: - Actions
     @IBAction func tappedChangeBack(_ sender: Any) {
         appDelegate.ppService.send(dataInfo: "color")
     }
+    
+    
     
     // MARK: - Notifications objc funcs
     @objc func didReceiveData(notification: NSNotification) {
@@ -56,6 +114,10 @@ class PlayViewController: UIViewController {
         }
     }
     
+    @objc func updateConnectedStatus(notification: NSNotification) {
+        verifyConnectedState()
+    }
+    
     /*
     // MARK: - Navigation
 
@@ -66,30 +128,4 @@ class PlayViewController: UIViewController {
     }
     */
 
-}
-
-extension PlayViewController : PPHandlerDelegate {
-    func pphandler(session manager: PPHandler, didChange state: MCSessionState, peer peerID: MCPeerID) {
-        
-    }
-    
-    func pphandler(advertiser manager: PPHandler, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        invitationHandler(true, manager.session)
-    }
-    
-    func pphandler(browser manager: PPHandler, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
-        
-    }
-    
-    func pphandler(session manager: PPHandler, didReceived data: Data, fromPeer peerID: MCPeerID) {
-        print("            ##### ##### ##### OK THIS LOOKS RIGHT")
-        NSLog("%@", "didWentToChangeBackground: \(data)")
-        OperationQueue.main.addOperation {
-            self.view.backgroundColor = UIColor.purple
-        }
-    }
-    
-    func pphandler(browser manager: PPHandler, lostPeer peerID: MCPeerID) {
-        
-    }
 }

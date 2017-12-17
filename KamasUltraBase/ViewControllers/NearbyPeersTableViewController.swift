@@ -20,17 +20,21 @@ class NearbyPeersTableViewController: UITableViewController {
         super.viewDidLoad()
         
         appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.ppService.delegate = self
         
         self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
         self.tableView.reloadData()
         
         self.doneButtomItem.isEnabled = false
+        self.tableView.tableFooterView = UIView()
         
         // MARK: Notifications Observers
         NotificationCenter.default.addObserver(self, selector: #selector(NearbyPeersTableViewController.foundPeer(notification:)), name:Notifications.MPCFoundPeer, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(NearbyPeersTableViewController.lostPeer(notification:)), name:Notifications.MPCLostPeer, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(NearbyPeersTableViewController.didChangeState(notification:)), name:Notifications.MPCDidChangeState, object: nil);
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        return true
     }
     
     // MARK: Actions
@@ -46,10 +50,12 @@ class NearbyPeersTableViewController: UITableViewController {
     
     // MARK: Notifications objc funcs
     @objc func foundPeer(notification: NSNotification) {
+        print(" *** Found Peer: Table realoaded")
         self.tableView.reloadData()
     }
     
     @objc func lostPeer(notification: NSNotification) {
+        print(" *** Lost Peer: Table realoaded")
         self.tableView.reloadData()
     }
     
@@ -127,6 +133,13 @@ class NearbyPeersTableViewController: UITableViewController {
             guard let cell = tableView.cellForRow(at: indexPath) as? NearbyPeersTableViewCell
                 else { fatalError("The dequeued cell is not an instance of NearbyPeersTableViewCell.") }
             
+            // Verify if is the peer connected and disconnect
+            if let cntdPeer = Global.shared.connectedPeer, cntdPeer == cell.peerID {
+                cell.stateLabel.text = "Desconnecting"
+                appDelegate.ppService.disconnectPeer()
+                return
+            }
+            
             cell.stateLabel.text = PeerState.connecting.rawValue
             Global.shared.connectingPeer = cell.peerID
             
@@ -138,40 +151,6 @@ class NearbyPeersTableViewController: UITableViewController {
                 //self.appDelegate.mpcHandler.invitePeer(peerID: mcPeer)
                 self.appDelegate.ppService.invitePeer(peerID: mcPeer)
             }
-            
-            
-        }
-    }
-}
-
-extension NearbyPeersTableViewController : PPHandlerDelegate {
-    func pphandler(browser manager: PPHandler, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
-        
-    }
-    
-    func pphandler(browser manager: PPHandler, lostPeer peerID: MCPeerID) {
-        OperationQueue.main.addOperation {
-            self.tableView.reloadData()
-        }
-    }
-    
-    func pphandler(advertiser manager: PPHandler, didReceiveInvitationFromPeer peerID: MCPeerID,
-                   withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        
-    }
-    
-    func pphandler(session manager: PPHandler, didReceived data: Data, fromPeer peerID: MCPeerID) {
-    
-    }
-    
-    func pphandler(session manager: PPHandler, didChange state: MCSessionState, peer peerID: MCPeerID) {
-        OperationQueue.main.addOperation {
-            if state == MCSessionState.notConnected {
-                self.updateDeclinedPeer(peerID: peerID)
-            } else {
-                self.doneButtomItem.isEnabled = true
-            }
-            self.tableView.reloadData()
         }
     }
 }
