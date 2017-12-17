@@ -12,7 +12,6 @@
 		AD7195961FE49BC900F65030 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD7195951FE49BC900F65030 /* Assets.xcassets */; };
 		AD7195991FE49BC900F65030 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD7195971FE49BC900F65030 /* LaunchScreen.storyboard */; };
 		AD7195A51FE49C4B00F65030 /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7195A31FE49C4B00F65030 /* Global.swift */; };
-		AD7195A71FE49C7F00F65030 /* MPCHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7195A61FE49C7F00F65030 /* MPCHandler.swift */; };
 		AD7195A91FE4A1C300F65030 /* PPHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7195A81FE4A1C300F65030 /* PPHandler.swift */; };
 		AD7195BC1FE4A67E00F65030 /* NearbyPeersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7195B81FE4A67E00F65030 /* NearbyPeersTableViewCell.swift */; };
 		AD7195BD1FE4A67E00F65030 /* NearbyPeersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7195B91FE4A67E00F65030 /* NearbyPeersTableViewController.swift */; };
@@ -20,6 +19,7 @@
 		AD7195BF1FE4A67E00F65030 /* PlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7195BB1FE4A67E00F65030 /* PlayViewController.swift */; };
 		AD7195C11FE4A6A100F65030 /* Peer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7195C01FE4A6A100F65030 /* Peer.swift */; };
 		AD7195C31FE4A94C00F65030 /* Base.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD7195C21FE4A94C00F65030 /* Base.storyboard */; };
+		AD773A0F1FE6FE69001577BF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD773A0E1FE6FE69001577BF /* ViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,7 +30,6 @@
 		AD7195981FE49BC900F65030 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AD71959A1FE49BC900F65030 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD7195A31FE49C4B00F65030 /* Global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
-		AD7195A61FE49C7F00F65030 /* MPCHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCHandler.swift; sourceTree = "<group>"; };
 		AD7195A81FE4A1C300F65030 /* PPHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PPHandler.swift; sourceTree = "<group>"; };
 		AD7195B81FE4A67E00F65030 /* NearbyPeersTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyPeersTableViewCell.swift; sourceTree = "<group>"; };
 		AD7195B91FE4A67E00F65030 /* NearbyPeersTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyPeersTableViewController.swift; sourceTree = "<group>"; };
@@ -38,6 +37,7 @@
 		AD7195BB1FE4A67E00F65030 /* PlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayViewController.swift; sourceTree = "<group>"; };
 		AD7195C01FE4A6A100F65030 /* Peer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Peer.swift; sourceTree = "<group>"; };
 		AD7195C21FE4A94C00F65030 /* Base.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Base.storyboard; sourceTree = "<group>"; };
+		AD773A0E1FE6FE69001577BF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +79,7 @@
 				AD7195951FE49BC900F65030 /* Assets.xcassets */,
 				AD7195971FE49BC900F65030 /* LaunchScreen.storyboard */,
 				AD71959A1FE49BC900F65030 /* Info.plist */,
+				AD773A0E1FE6FE69001577BF /* ViewController.swift */,
 			);
 			path = KamasUltraBase;
 			sourceTree = "<group>";
@@ -87,7 +88,6 @@
 			isa = PBXGroup;
 			children = (
 				AD7195C01FE4A6A100F65030 /* Peer.swift */,
-				AD7195A61FE49C7F00F65030 /* MPCHandler.swift */,
 				AD7195A81FE4A1C300F65030 /* PPHandler.swift */,
 			);
 			path = Peer2Peer;
@@ -177,7 +177,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD7195A71FE49C7F00F65030 /* MPCHandler.swift in Sources */,
+				AD773A0F1FE6FE69001577BF /* ViewController.swift in Sources */,
 				AD7195BF1FE4A67E00F65030 /* PlayViewController.swift in Sources */,
 				AD7195BC1FE4A67E00F65030 /* NearbyPeersTableViewCell.swift in Sources */,
 				AD7195BD1FE4A67E00F65030 /* NearbyPeersTableViewController.swift in Sources */,

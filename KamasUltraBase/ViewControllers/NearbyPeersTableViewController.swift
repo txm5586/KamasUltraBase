@@ -37,6 +37,16 @@ class NearbyPeersTableViewController: UITableViewController {
         return true
     }
     
+    func setBlurBackground() {
+        self.tableView.backgroundColor = UIColor.clear
+        
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = self.view.frame
+        
+        self.tableView.backgroundView = blurEffectView
+    }
+    
     // MARK: Actions
     @IBAction func cancelTapped(_ sender: Any) {
         Global.shared.connectingPeer = nil
@@ -127,6 +137,7 @@ class NearbyPeersTableViewController: UITableViewController {
             return
         }
         
+        doneButtomItem.isEnabled = false
         tableView.reloadData()
         
         if indexPath.row > 0 {
@@ -135,7 +146,7 @@ class NearbyPeersTableViewController: UITableViewController {
             
             // Verify if is the peer connected and disconnect
             if let cntdPeer = Global.shared.connectedPeer, cntdPeer == cell.peerID {
-                cell.stateLabel.text = "Desconnecting"
+                cell.stateLabel.text = "Disconnecting"
                 appDelegate.ppService.disconnectPeer()
                 return
             }

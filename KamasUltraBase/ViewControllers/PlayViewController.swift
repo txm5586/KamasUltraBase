@@ -12,12 +12,16 @@ import MultipeerConnectivity
 class PlayViewController: UIViewController {
     private var appDelegate: AppDelegate!
     
+    var gradientLayer : CAGradientLayer!
+    var layerCounter = 1
     
+    @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var playButtonView: UIView!
     @IBOutlet weak var playButton: UIButton!
     
     @IBOutlet weak var connectButton: UIButton!
     
+    var timer = Timer()
     
     override func viewWillAppear(_ animated: Bool) {
         verifyConnectedState()
@@ -51,15 +55,48 @@ class PlayViewController: UIViewController {
     }
     
     func setGradientBackground() {
-        let colorTop =  UIColor(red: 252.0/255.0, green: 70.0/255.0, blue: 107.0/255.0, alpha: 1.0).cgColor
-        let colorBottom = UIColor(red: 63.0/255.0, green: 94.0/255.0, blue: 251.0/255.0, alpha: 1.0).cgColor
+        let colorA = UIColor(hex: 0xFC466B).cgColor
+        let colorB = UIColor(hex: 0x3F5EFB).cgColor
         
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [ colorTop, colorBottom]
+        gradientLayer = CAGradientLayer()
+        gradientLayer.startPoint = CGPoint(x: 0.0, y:0.0)
+        gradientLayer.endPoint = CGPoint(x:0.0, y:1.0)
+        gradientLayer.colors = [ colorA, colorB]
         gradientLayer.locations = [ 0.0, 1.0]
         gradientLayer.frame = self.view.bounds
         
-        self.view.layer.insertSublayer(gradientLayer, at: 0)
+        self.backgroundView.layer.insertSublayer(gradientLayer, at: 0)
+        
+        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.extraLight)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        //self.backgroundView.insertSubview(blurEffectView, at: 0)
+    }
+    
+    @objc func getRandomColor() {
+        print("Oi")
+        var red   = CGFloat((arc4random() % 56) + 200) / 255.0
+        var green = CGFloat((arc4random() % 256) + 0) / 255.0
+        var blue  = CGFloat((arc4random() % 256) + 0) / 255.0
+        
+        let colorTop = UIColor(red: red, green: green, blue: blue, alpha: 1.0).cgColor
+        
+        red   = CGFloat((arc4random() % 256) + 0) / 255.0
+        green = CGFloat((arc4random() % 256) + 0) / 255.0
+        blue  = CGFloat((arc4random() % 56) + 200) / 255.0
+        
+        let colorBottom = UIColor(red: red, green: green, blue: blue, alpha: 1.0).cgColor
+        
+        gradientLayer.colors = [ colorTop, colorBottom, colorTop]
+        gradientLayer.locations = [ 0.0, 1.0]
+        gradientLayer.frame = self.view.bounds
+        
+        UIView.animate(withDuration: 1, delay: 0.0, options:[.transitionCrossDissolve], animations: {
+            self.backgroundView.layer.insertSublayer(self.gradientLayer, at: UInt32(self.layerCounter))
+        }, completion:nil)
+        layerCounter += 1
     }
     
     override func viewDidLoad() {
@@ -71,6 +108,18 @@ class PlayViewController: UIViewController {
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.didReceiveData(notification:)), name:Notifications.MPCDidReceiveData, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.updateConnectedStatus(notification:)), name:Notifications.UpdateConnectedStatus, object: nil);
+        
+        setGradientBackground()
+        //scheduledTimerWithTimeInterval()
+    }
+    
+    func scheduledTimerWithTimeInterval(){
+        // Scheduling timer to Call the function "updateCounting" with the interval of 1 seconds
+        timer = Timer.scheduledTimer(timeInterval: 7,
+                             target: self,
+                             selector: #selector(self.getRandomColor),
+                             userInfo: nil,
+                             repeats: true)
     }
     
     override var prefersStatusBarHidden: Bool {
@@ -78,10 +127,9 @@ class PlayViewController: UIViewController {
     }
     
     // MARK: - Actions
-    @IBAction func tappedChangeBack(_ sender: Any) {
+    func tappedChangeBack(_ sender: Any) {
         appDelegate.ppService.send(dataInfo: "color")
     }
-    
     
     
     // MARK: - Notifications objc funcs
