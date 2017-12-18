@@ -9,7 +9,7 @@
 import UIKit
 import MultipeerConnectivity
 
-class PlayViewController: UIViewController {
+class PlayViewController: UIViewController, SettingsTableViewControllerDelegate {
     private var appDelegate: AppDelegate!
     
     var gradientLayer : CAGradientLayer!
@@ -27,6 +27,7 @@ class PlayViewController: UIViewController {
         verifyConnectedState()
         setButtonsTranformation()
         setGradientBackground()
+        self.navigationController?.isNavigationBarHidden = true
     }
     
     func verifyConnectedState() {
@@ -40,6 +41,7 @@ class PlayViewController: UIViewController {
     func setButtonsTranformation() {
         playButtonView.backgroundColor = UIColor.white
         playButtonView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 0.25)
+        playButtonView.layer.cornerRadius = 40.0
         playButton.transform = CGAffineTransform(rotationAngle: -CGFloat.pi * 0.25)
         
         playButtonView.layer.shadowColor = UIColor.black.cgColor
@@ -131,6 +133,19 @@ class PlayViewController: UIViewController {
         appDelegate.ppService.send(dataInfo: "color")
     }
     
+    @IBAction func pantoneMoodTapped(_ sender: Any) {
+    
+    }
+    
+    @IBAction func setttingsTapped(_ sender: Any) {
+        self.definesPresentationContext = true
+        self.providesPresentationContextTransitionStyle = true
+        
+        self.overlayBlurredBackgroundView()
+    }
+    
+    
+    
     
     // MARK: - Notifications objc funcs
     @objc func didReceiveData(notification: NSNotification) {
@@ -166,14 +181,35 @@ class PlayViewController: UIViewController {
         verifyConnectedState()
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func overlayBlurredBackgroundView() {
+        
+        let blurredBackgroundView = UIVisualEffectView()
+        
+        blurredBackgroundView.frame = view.frame
+        blurredBackgroundView.effect = UIBlurEffect(style: .dark)
+        
+        view.addSubview(blurredBackgroundView)
+        
     }
-    */
+    
+    func removeBlurredBackgroundView() {
+        
+        for subview in view.subviews {
+            if subview.isKind(of: UIVisualEffectView.self) {
+                subview.removeFromSuperview()
+            }
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let identifier = segue.identifier {
+            if identifier == "SettingTableView" {
+                if let viewController = segue.destination as? SettingsTableViewController {
+                    viewController.delegate = self
+                    viewController.modalPresentationStyle = .overFullScreen
+                }
+            }
+        }
+    }
 
 }
