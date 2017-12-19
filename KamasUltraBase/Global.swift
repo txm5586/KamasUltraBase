@@ -9,12 +9,29 @@
 import Foundation
 import MultipeerConnectivity
 
+public class FirstLauch {
+    init() {
+        print("Opened")
+        if(!UserDefaults.standard.bool(forKey: UserKey.firstLaunch)){
+            print("Is a first launch")
+            
+            //Put any code here and it will be executed only once.
+            let userDefaults = UserDefaults.standard
+            
+            userDefaults.set(true, forKey: UserKey.firstLaunch)
+            userDefaults.set(UIDevice.current.name, forKey: UserKey.peerName)
+            userDefaults.set(Constants.female, forKey: UserKey.gender)
+        }
+    }
+}
+
 class Global {
-    // These are the properties you can store in your singleton
+    // MARK: Variables relative to P2P Connection
     var peers = [Peer]()
-    
     var connectingPeer : MCPeerID?
     var connectedPeer : MCPeerID?
+    
+    // MARK: Relative to the settings of current user
     
     // Here is how you would get to it without there being a global collision of variables.
     // , or in other words, it is a globally accessable parameter that is specific to the
@@ -31,6 +48,17 @@ enum PeerState : String {
     case connected = "Connected"
     case connecting = "Connecting"
     case declined = "Disconnected"
+}
+
+public class Constants {
+    static let male = 0
+    static let female = 1
+}
+
+public class UserKey {
+    static let peerName = "peerName"
+    static let gender = "gender"
+    static let firstLaunch = "isFirstLaunch"
 }
 
 public class Notifications {
@@ -63,4 +91,3 @@ extension UIColor {
         )
     }
 }
-

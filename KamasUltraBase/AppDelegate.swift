@@ -12,8 +12,12 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-    let ppService = PPHandler()
+    
+    let firstLaunch = FirstLauch()
+    lazy var ppService : PPHandler = {
+        return PPHandler()
+    }()
+    
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.

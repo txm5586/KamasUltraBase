@@ -9,10 +9,10 @@ class PPHandler : NSObject {
     // MARK: Properties
     private let serviceType = "kamasultraapp"
     
-    private let myPeerId = MCPeerID(displayName: UIDevice.current.name)
+    private var myPeerId : MCPeerID
     
-    private let serviceAdvertiser : MCNearbyServiceAdvertiser
-    private let serviceBrowser : MCNearbyServiceBrowser
+    private var serviceAdvertiser : MCNearbyServiceAdvertiser
+    private var serviceBrowser : MCNearbyServiceBrowser
     
     lazy var session : MCSession = {
         let session = MCSession(peer: self.myPeerId, securityIdentity: nil, encryptionPreference: .required)
@@ -21,6 +21,11 @@ class PPHandler : NSObject {
     }()
     
     override init() {
+        // Check user configurations
+        let userDefaults = UserDefaults.standard
+        let peerName = userDefaults.object(forKey: UserKey.peerName) as? String
+        self.myPeerId = MCPeerID(displayName: peerName!)
+        
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: self.serviceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: self.serviceType)
         
@@ -86,6 +91,33 @@ class PPHandler : NSObject {
         presentAtTopViewController(view: alert)
     }
     
+    func disconnectPeer() {
+        self.session.disconnect()
+        Global.shared.connectedPeer = nil
+    }
+    
+    func adversiteSelf(adverstise: Bool) {
+        if adverstise {
+            self.serviceAdvertiser.startAdvertisingPeer()
+        } else {
+            self.serviceAdvertiser.stopAdvertisingPeer()
+        }
+    }
+    
+    func resetPeerID(newDisplayName: String) {
+        self.myPeerId = MCPeerID(displayName: newDisplayName)
+        
+        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: self.serviceType)
+        self.serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: self.serviceType)
+        self.session = MCSession(peer: self.myPeerId, securityIdentity: nil, encryptionPreference: .required)
+        
+        self.serviceAdvertiser.delegate = self
+        self.serviceAdvertiser.startAdvertisingPeer()
+        self.serviceBrowser.delegate = self
+        self.serviceBrowser.startBrowsingForPeers()
+        self.session.delegate = self
+    }
+    
     func presentAtTopViewController(view: UIViewController) {
         if var topController = UIApplication.shared.keyWindow?.rootViewController {
             while let presentedViewController = topController.presentedViewController {
@@ -96,12 +128,6 @@ class PPHandler : NSObject {
             topController.present(view, animated: true, completion: nil)
         }
     }
-    
-    func disconnectPeer() {
-        self.session.disconnect()
-        Global.shared.connectedPeer = nil
-    }
-    
 }
 
 // MARK: Advertiser Delegate

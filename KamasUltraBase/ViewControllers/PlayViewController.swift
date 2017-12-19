@@ -78,7 +78,6 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
     }
     
     @objc func getRandomColor() {
-        print("Oi")
         var red   = CGFloat((arc4random() % 56) + 200) / 255.0
         var green = CGFloat((arc4random() % 256) + 0) / 255.0
         var blue  = CGFloat((arc4random() % 256) + 0) / 255.0
@@ -143,9 +142,6 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
         
         self.overlayBlurredBackgroundView()
     }
-    
-    
-    
     
     // MARK: - Notifications objc funcs
     @objc func didReceiveData(notification: NSNotification) {

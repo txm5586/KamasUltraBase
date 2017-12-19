@@ -12,22 +12,59 @@ protocol SettingsTableViewControllerDelegate {
     func removeBlurredBackgroundView()
 }
 
-class SettingsTableViewController: UITableViewController {
+class SettingsTableViewController: UITableViewController, UITextFieldDelegate {
+    // MARK: Properties
+    private var appDelegate: AppDelegate!
     var delegate: SettingsTableViewControllerDelegate?
     
+    @IBOutlet weak var genderSegment: UISegmentedControl!
+    @IBOutlet weak var namePeerTextField: UITextField!
+    @IBOutlet weak var bodyImageView: UIImageView!
+    
+    
     // MARK: Actions
+    @IBAction func segmentTapped(_ sender: Any) {
+        if self.genderSegment.selectedSegmentIndex == Constants.male {
+            self.bodyImageView.image = #imageLiteral(resourceName: "WhiteBodyMan")
+        } else if self.genderSegment.selectedSegmentIndex == Constants.female {
+            self.bodyImageView.image = #imageLiteral(resourceName: "WhiteBodyWoman")
+        }
+    }
     
+    @IBAction func saveButtonTapped(_ sender: Any) {
+        let userDefaults = UserDefaults.standard
+        
+        self.appDelegate.ppService.adversiteSelf(adverstise: false)
+        
+        var namePeer = namePeerTextField.text!
+        if namePeer == "" {
+            namePeer = UIDevice.current.name
+        }
+        
+        userDefaults.set(namePeer, forKey: UserKey.peerName)
+        userDefaults.set(genderSegment.selectedSegmentIndex, forKey: UserKey.gender)
+        
+        self.appDelegate.ppService.resetPeerID(newDisplayName: namePeer)
+        dismiss(animated: true, completion: nil)
+    }
     
+    @IBAction func cancelButtonTapped(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
     
     // MARK: Override functions
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        self.appDelegate = UIApplication.shared.delegate as! AppDelegate
+        
         self.navigationController?.isNavigationBarHidden = false
         
         tableView.backgroundColor = .clear
         tableView.tableFooterView = UIView()
     
+        
+        namePeerTextField.delegate = self
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -37,6 +74,16 @@ class SettingsTableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isTranslucent = true
+        
+        let userDefaults = UserDefaults.standard
+        self.namePeerTextField.text = userDefaults.object(forKey: UserKey.peerName) as? String
+        self.genderSegment.selectedSegmentIndex = (userDefaults.object(forKey: UserKey.gender) as? Int)!
+        
+        if self.genderSegment.selectedSegmentIndex == Constants.male {
+            self.bodyImageView.image = #imageLiteral(resourceName: "WhiteBodyMan")
+        } else if self.genderSegment.selectedSegmentIndex == Constants.female {
+            self.bodyImageView.image = #imageLiteral(resourceName: "WhiteBodyWoman")
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -58,6 +105,11 @@ class SettingsTableViewController: UITableViewController {
     }
     
     override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.namePeerTextField.resignFirstResponder()
         return true
     }
 
