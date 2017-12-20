@@ -10,50 +10,82 @@ import UIKit
 import MultipeerConnectivity
 
 class PlayViewController: UIViewController, SettingsTableViewControllerDelegate {
+    var viewControllerToInsertBelow : UIViewController?
+    
+    // MARK: Properties
     private var appDelegate: AppDelegate!
     
     var gradientLayer : CAGradientLayer!
     var layerCounter = 1
     
     @IBOutlet weak var backgroundView: UIView!
-    @IBOutlet weak var playButtonView: UIView!
     @IBOutlet weak var playButton: UIButton!
-    
     @IBOutlet weak var connectButton: UIButton!
+    @IBOutlet weak var waitWarningLabel: UILabel!
+    @IBOutlet weak var settingsButton: UIButton!
+    
     
     var timer = Timer()
     
+    // MARK: Override functions
     override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.isNavigationBarHidden = true
+        self.waitWarningLabel.isHidden = true
+        self.playButton.isEnabled = true
+        
         verifyConnectedState()
         setButtonsTranformation()
         setGradientBackground()
-        self.navigationController?.isNavigationBarHidden = true
     }
     
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        appDelegate = UIApplication.shared.delegate as! AppDelegate
+        self.navigationController?.isNavigationBarHidden = true
+        
+        // Do any additional setup after loading the view.
+        NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.didReceiveData(notification:)), name:Notifications.MPCDidReceiveData, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.updateConnectedStatus(notification:)), name:Notifications.UpdateConnectedStatus, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.updateConnectedStatus(notification:)), name:Notifications.MPCLostPeer, object: nil);
+        
+        setGradientBackground()
+        //scheduledTimerWithTimeInterval()
+    }
+    
+    // MARK: Internal functions
     func verifyConnectedState() {
         if let peer = Global.shared.connectedPeer {
-            connectButton.setTitle("Playing with \(peer.displayName)", for: .normal)
+            self.connectButton.setTitle("Playing with \(peer.displayName)", for: .normal)
+            
+            if Global.shared.isMaster {
+                // Activate Play Button
+                self.playButton.isEnabled = true
+                self.waitWarningLabel.isHidden = true
+            } else {
+                self.playButton.isEnabled = false
+                // Set label waiting for partner...
+                self.waitWarningLabel.text = Constants.waitingPartnerWarning
+                self.waitWarningLabel.isHidden = false
+            }
+            
         } else {
-            connectButton.setTitle("Connect", for: .normal)
+            self.waitWarningLabel.isHidden = true
+            self.playButton.isEnabled = true
+            self.connectButton.setTitle("Connect", for: .normal)
         }
     }
     
     func setButtonsTranformation() {
-        playButtonView.backgroundColor = UIColor.white
-        playButtonView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 0.25)
-        playButtonView.layer.cornerRadius = 40.0
-        playButton.transform = CGAffineTransform(rotationAngle: -CGFloat.pi * 0.25)
-        
-        playButtonView.layer.shadowColor = UIColor.black.cgColor
-        playButtonView.layer.shadowOpacity = 1
-        playButtonView.layer.shadowOffset = CGSize.zero
-        playButtonView.layer.shadowRadius = 10
-        
-        connectButton.titleLabel?.textColor = UIColor.white
-        connectButton.layer.shadowColor = UIColor.black.cgColor
-        connectButton.layer.shadowOpacity = 1
-        connectButton.layer.shadowOffset = CGSize.zero
-        connectButton.layer.shadowRadius = 10
+        self.connectButton.titleLabel?.textColor = UIColor.white
+        self.connectButton.layer.shadowColor = UIColor.black.cgColor
+        self.connectButton.layer.shadowOpacity = 1
+        self.connectButton.layer.shadowOffset = CGSize.zero
+        self.connectButton.layer.shadowRadius = 10
     }
     
     func setGradientBackground() {
@@ -100,20 +132,6 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
         layerCounter += 1
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        appDelegate = UIApplication.shared.delegate as! AppDelegate
-        
-        self.navigationController?.isNavigationBarHidden = true
-        
-        // Do any additional setup after loading the view.
-        NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.didReceiveData(notification:)), name:Notifications.MPCDidReceiveData, object: nil);
-        NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.updateConnectedStatus(notification:)), name:Notifications.UpdateConnectedStatus, object: nil);
-        
-        setGradientBackground()
-        //scheduledTimerWithTimeInterval()
-    }
-    
     func scheduledTimerWithTimeInterval(){
         // Scheduling timer to Call the function "updateCounting" with the interval of 1 seconds
         timer = Timer.scheduledTimer(timeInterval: 7,
@@ -121,10 +139,6 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
                              selector: #selector(self.getRandomColor),
                              userInfo: nil,
                              repeats: true)
-    }
-    
-    override var prefersStatusBarHidden: Bool {
-        return true
     }
     
     // MARK: - Actions
@@ -142,6 +156,15 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
         
         self.overlayBlurredBackgroundView()
     }
+    
+    @IBAction func playButtonTapped(_ sender: Any) {
+        if Global.shared.connectedPeer == nil {
+            self.waitWarningLabel.text = Constants.connectFirstWarning
+            self.waitWarningLabel.isHidden = false
+            return
+        }
+    }
+    
     
     // MARK: - Notifications objc funcs
     @objc func didReceiveData(notification: NSNotification) {
@@ -177,19 +200,18 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
         verifyConnectedState()
     }
     
+    
+    // MARK: Segue preparation
     func overlayBlurredBackgroundView() {
-        
         let blurredBackgroundView = UIVisualEffectView()
         
         blurredBackgroundView.frame = view.frame
         blurredBackgroundView.effect = UIBlurEffect(style: .dark)
         
         view.addSubview(blurredBackgroundView)
-        
     }
     
     func removeBlurredBackgroundView() {
-        
         for subview in view.subviews {
             if subview.isKind(of: UIVisualEffectView.self) {
                 subview.removeFromSuperview()
@@ -207,5 +229,4 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
             }
         }
     }
-
 }

@@ -20,7 +20,7 @@ class SettingsTableViewController: UITableViewController, UITextFieldDelegate {
     @IBOutlet weak var genderSegment: UISegmentedControl!
     @IBOutlet weak var namePeerTextField: UITextField!
     @IBOutlet weak var bodyImageView: UIImageView!
-    
+    @IBOutlet weak var navigationBar: UINavigationBar!
     
     // MARK: Actions
     @IBAction func segmentTapped(_ sender: Any) {
@@ -60,9 +60,16 @@ class SettingsTableViewController: UITableViewController, UITextFieldDelegate {
         
         self.navigationController?.isNavigationBarHidden = false
         
-        tableView.backgroundColor = .clear
-        tableView.tableFooterView = UIView()
-    
+        self.tableView.tableFooterView?.backgroundColor = UIColor.black
+        self.tableView.tableHeaderView?.backgroundColor = UIColor.black
+        self.tableView.separatorStyle = .none
+        self.tableView.backgroundColor = .clear
+        self.tableView.tableFooterView = UIView()
+        
+        self.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationBar.shadowImage = UIImage()
+        self.navigationBar.isTranslucent = true
+        self.navigationBar.backgroundColor = .clear
         
         namePeerTextField.delegate = self
         // Uncomment the following line to preserve selection between presentations
@@ -112,6 +119,7 @@ class SettingsTableViewController: UITableViewController, UITextFieldDelegate {
         self.namePeerTextField.resignFirstResponder()
         return true
     }
+    
 
     // MARK: - Table view data source
 

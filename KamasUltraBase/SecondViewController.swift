@@ -1,35 +1,25 @@
 //
-//  ViewController.swift
+//  ABCViewController.swift
 //  KamasUltraBase
 //
-//  Created by Tassio Moreira Marques on 17/12/2017.
+//  Created by Tassio Moreira Marques on 19/12/2017.
 //  Copyright © 2017 Tassio Marques. All rights reserved.
 //
 
 import UIKit
 
-class ViewController: UIViewController {
-    @IBOutlet weak var testView: UIView!
-    
+class SecondViewController: UIViewController {
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = view.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        testView.addSubview(blurEffectView)
+        print("whats happenings?")
         // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
-        return UIStatusBarAnimation.slide
     }
     
 

@@ -7,7 +7,7 @@ import MultipeerConnectivity
 
 class PPHandler : NSObject {
     // MARK: Properties
-    private let serviceType = "kamasultraapp"
+    private let serviceType = "appKamasultra"
     
     private var myPeerId : MCPeerID
     
@@ -31,11 +31,14 @@ class PPHandler : NSObject {
         
         super.init()
         
+        NSLog("%@", "Started Adversiting")
         self.serviceAdvertiser.delegate = self
         self.serviceAdvertiser.startAdvertisingPeer()
+        NSLog("%@", "Started Adversiting")
         
         self.serviceBrowser.delegate = self
         self.serviceBrowser.startBrowsingForPeers()
+        NSLog("%@", "Started Browsing")
     }
     
     deinit {
@@ -59,6 +62,7 @@ class PPHandler : NSObject {
     }
     
     func invitePeer(peerID: MCPeerID) {
+        Global.shared.isMaster = true
         self.serviceBrowser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
     }
     
@@ -71,6 +75,7 @@ class PPHandler : NSObject {
             alert.addAction(UIAlertAction(title: "Accept", style: .default, handler: { _ in
                 invitationHandler(true, self.session)
                 Global.shared.connectedPeer = peerID
+                Global.shared.isMaster = false
                 DispatchQueue.main.async { NotificationCenter.default.post(name: Notifications.UpdateConnectedStatus, object: nil, userInfo: nil) }
             }))
             

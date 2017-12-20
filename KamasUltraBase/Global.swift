@@ -25,11 +25,31 @@ public class FirstLauch {
     }
 }
 
+class Action {
+    static let kiss = 0
+    static let lick = 1
+    static let suck = 2
+    static let touch = 3
+    static let random = 4
+}
+
+class BodyPart {
+    static let kiss = 0
+    static let lick = 1
+    static let suck = 2
+    static let touch = 3
+    static let random = 4
+}
+
 class Global {
     // MARK: Variables relative to P2P Connection
     var peers = [Peer]()
     var connectingPeer : MCPeerID?
     var connectedPeer : MCPeerID?
+    var isMaster : Bool = false
+    
+    var selectedAction : Int!
+    var selectedBodyPart : Int!
     
     // MARK: Relative to the settings of current user
     
@@ -53,6 +73,9 @@ enum PeerState : String {
 public class Constants {
     static let male = 0
     static let female = 1
+    
+    static let connectFirstWarning = "Try connecting with a partner first"
+    static let waitingPartnerWarning = "Waiting for your partner to start"
 }
 
 public class UserKey {

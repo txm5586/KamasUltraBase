@@ -13,11 +13,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    let firstLaunch = FirstLauch()
-    lazy var ppService : PPHandler = {
-        return PPHandler()
-    }()
+    let firstLaunch : FirstLauch
     
+    // ppService MUST be initialized after FirstLaunch
+    var ppService : PPHandler
+    
+    override init() {
+        firstLaunch = FirstLauch()
+        // ppService MUST be initialized after FirstLaunch
+        ppService = PPHandler()
+        
+        super.init()
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
