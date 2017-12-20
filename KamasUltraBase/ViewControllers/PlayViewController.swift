@@ -16,6 +16,8 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
     private var appDelegate: AppDelegate!
     
     var gradientLayer : CAGradientLayer!
+    var lastGradientLayer = CAGradientLayer()
+    
     var layerCounter = 1
     
     @IBOutlet weak var backgroundView: UIView!
@@ -23,7 +25,6 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
     @IBOutlet weak var connectButton: UIButton!
     @IBOutlet weak var waitWarningLabel: UILabel!
     @IBOutlet weak var settingsButton: UIButton!
-    
     
     var timer = Timer()
     
@@ -53,6 +54,7 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
         NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.updateConnectedStatus(notification:)), name:Notifications.UpdateConnectedStatus, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.updateConnectedStatus(notification:)), name:Notifications.MPCLostPeer, object: nil);
         
+        self.backgroundView.layer.insertSublayer(lastGradientLayer, at: 0)
         setGradientBackground()
         //scheduledTimerWithTimeInterval()
     }
@@ -89,23 +91,30 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
     }
     
     func setGradientBackground() {
-        let colorA = UIColor(hex: 0xFC466B).cgColor
-        let colorB = UIColor(hex: 0x3F5EFB).cgColor
-        
         gradientLayer = CAGradientLayer()
         gradientLayer.startPoint = CGPoint(x: 0.0, y:0.0)
         gradientLayer.endPoint = CGPoint(x:0.0, y:1.0)
-        gradientLayer.colors = [ colorA, colorB]
-        gradientLayer.locations = [ 0.0, 1.0]
+        gradientLayer.colors = MoodConfig.getScreenGradient()
+        
+        if gradientLayer.colors?.count == 2 {
+            gradientLayer.locations = [ 0.0, 1.0]
+        } else if gradientLayer.colors?.count == 3 {
+            gradientLayer.locations = [ 0.0, 0.5, 1.0]
+        } else {
+            gradientLayer.locations = [ 0.0, 0.25, 0.5, 0.75]
+        }
+        //gradientLayer.colors = [MoodConfig.gradientColor1,MoodConfig.gradientColor2]
         gradientLayer.frame = self.view.bounds
         
-        self.backgroundView.layer.insertSublayer(gradientLayer, at: 0)
+        //self.backgroundView.layer.insertSublayer(gradientLayer, at: 0)
+        self.backgroundView.layer.replaceSublayer(lastGradientLayer, with: gradientLayer)
         
         let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.extraLight)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.frame = view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
+        self.lastGradientLayer = self.gradientLayer
         //self.backgroundView.insertSubview(blurEffectView, at: 0)
     }
     
@@ -228,5 +237,15 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
                 }
             }
         }
+    }
+    
+    // MARK: Unwind Segues
+    @IBAction func unwindToTeste(segue: UIStoryboardSegue) {
+        print("Is back!")
+    }
+    
+    @IBAction func changeMood(_ sender: Any) {
+        MoodConfig.changeMood(mood: .Excitement)
+        self.setGradientBackground()
     }
 }

@@ -167,7 +167,7 @@
                                         </state>
                                         <connections>
                                             <action selector="playButtonTapped:" destination="J3R-fL-zN3" eventType="touchUpInside" id="cKl-PU-RdZ"/>
-                                            <segue destination="saA-Ic-BKs" kind="show" id="Fws-Wq-6eQ"/>
+                                            <segue destination="saA-Ic-BKs" kind="show" identifier="startHostFlowSegue" id="Fws-Wq-6eQ"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Waiting for your partner to start" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sNK-MQ-MrP">
@@ -179,6 +179,22 @@
                                         <color key="textColor" name="alternateSelectedControlTextColor" catalog="System" colorSpace="catalog"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3He-QM-z3W">
+                                        <rect key="frame" x="260" y="443" width="45" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Flow 2"/>
+                                        <connections>
+                                            <segue destination="K3O-ts-wcU" kind="show" id="Jew-Nl-D9h"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1nQ-wu-cKg">
+                                        <rect key="frame" x="54" y="476" width="97" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Change mood"/>
+                                        <connections>
+                                            <action selector="changeMood:" destination="J3R-fL-zN3" eventType="touchUpInside" id="KJI-xl-KhV"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="0.1857388616" blue="0.57339501380000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
@@ -270,7 +286,7 @@
                         <outlet property="playButton" destination="MHb-MD-E9s" id="hs4-bM-lnn"/>
                         <outlet property="settingsButton" destination="S6n-mi-Xmq" id="jUS-Uj-KgJ"/>
                         <outlet property="waitWarningLabel" destination="sNK-MQ-MrP" id="Z5W-Q0-PAa"/>
-                        <segue destination="K3O-ts-wcU" kind="show" id="guO-Zw-FZK"/>
+                        <segue destination="K3O-ts-wcU" kind="show" identifier="startGuestFlowSegue" id="guO-Zw-FZK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Zj-8G-AL4" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -283,7 +299,7 @@
                 <viewControllerPlaceholder storyboardName="FlowHost" id="saA-Ic-BKs" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nkw-5N-TPt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-97" y="-25"/>
+            <point key="canvasLocation" x="-66" y="-118"/>
         </scene>
         <!--FlowGuest-->
         <scene sceneID="78e-RH-GuG">
@@ -291,7 +307,7 @@
                 <viewControllerPlaceholder storyboardName="FlowGuest" id="K3O-ts-wcU" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6ax-ez-5xt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-91" y="22"/>
+            <point key="canvasLocation" x="-61" y="91"/>
         </scene>
         <!--Nearby Peers Table View Controller-->
         <scene sceneID="yZp-3m-wKs">
@@ -437,4 +453,7 @@
         <image name="playButton" width="192" height="192"/>
         <image name="settings" width="30" height="30"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="Jew-Nl-D9h"/>
+    </inferredMetricsTieBreakers>
 </document>
