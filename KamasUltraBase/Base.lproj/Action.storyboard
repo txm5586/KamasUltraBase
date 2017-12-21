@@ -48,7 +48,7 @@
                 <viewControllerPlaceholder storyboardName="FlowHost" id="yZw-bF-9oe" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nEZ-Uo-CIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="722" y="254"/>
+            <point key="canvasLocation" x="876" y="54"/>
         </scene>
         <!--FlowGuest-->
         <scene sceneID="cY3-dQ-k94">
@@ -56,7 +56,7 @@
                 <viewControllerPlaceholder storyboardName="FlowGuest" id="SKS-57-DEM" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rob-Lf-EK1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="755" y="469"/>
+            <point key="canvasLocation" x="882" y="246"/>
         </scene>
     </scenes>
 </document>
