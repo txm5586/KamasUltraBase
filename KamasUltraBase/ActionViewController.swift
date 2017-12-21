@@ -31,6 +31,7 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
     }
     
     func skipActionScreen() {
+        
         Global.shared.isMasterTurn = !Global.shared.isMasterTurn
         
         if Global.shared.isMaster {
