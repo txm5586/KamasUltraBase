@@ -132,6 +132,7 @@
                     <connections>
                         <outlet property="actionReceivedImage" destination="V15-HZ-zfv" id="Ega-hh-IxQ"/>
                         <outlet property="bodyPartLabel" destination="1f3-KY-0rP" id="Ry8-vj-FF8"/>
+                        <outlet property="myView" destination="abi-fe-Rp6" id="6HI-2F-pdi"/>
                         <segue destination="wiM-KY-ph5" kind="unwind" identifier="unwindFromReceiveToPlay" unwindAction="unwindToPlayLostConnectionWithSegue:" id="AEX-CT-vZU"/>
                         <segue destination="McV-ia-rIq" kind="show" identifier="goToActionFromGuestSegue" id="n1x-gJ-sxu"/>
                         <segue destination="wiM-KY-ph5" kind="unwind" identifier="unwindToActionFromReceiveSegue" unwindAction="unwindToActionFlowWithSegue:" id="dMS-A1-mvO"/>

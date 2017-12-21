@@ -11,6 +11,8 @@ import UIKit
 class ReceiveNudesViewController: UIViewController {
     @IBOutlet weak var actionReceivedImage: UIImageView!
     @IBOutlet weak var bodyPartLabel: UILabel!
+   
+    @IBOutlet weak var myView: UIView!
     
     public func checkActionReceived() {
         print("--------------------------- 2")
@@ -28,6 +30,17 @@ class ReceiveNudesViewController: UIViewController {
         
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(ReceiveNudesViewController.lostConnectionWithPeer(notification:)), name:Notifications.DidLostConnectionWithPeer, object: nil);
+        
+        createGradientLayer()
+        
+    }
+    
+    var gradientLayer: CAGradientLayer!
+    func createGradientLayer() {
+        gradientLayer = CAGradientLayer()
+        gradientLayer.frame = myView.bounds
+        gradientLayer.colors = [MoodConfig.gradientColor1,MoodConfig.gradientColor2, MoodConfig.gradientColor3,MoodConfig.gradientColor4]
+        myView.layer.insertSublayer(gradientLayer, at: 0)
     }
     
     @objc func lostConnectionWithPeer(notification: NSNotification) {
