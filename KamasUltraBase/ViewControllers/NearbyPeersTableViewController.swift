@@ -85,8 +85,9 @@ class NearbyPeersTableViewController: UITableViewController {
     }
     
     func updateDeclinedPeer(peerID: MCPeerID) {
-        let peer = Global.shared.peers.filter({$0.peerID == peerID}).first!
-        peer.state = PeerState.declined.rawValue
+        if let peer = Global.shared.peers.filter({$0.peerID == peerID}).first {
+            peer.state = PeerState.declined.rawValue
+        }
     }
     
     // MARK: - Table view data source
@@ -97,6 +98,7 @@ class NearbyPeersTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
+        print(Global.shared.peers.count)
         return Global.shared.peers.count + 1
     }
     

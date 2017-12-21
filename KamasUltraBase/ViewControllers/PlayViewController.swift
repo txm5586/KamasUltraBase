@@ -49,6 +49,8 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
         appDelegate = UIApplication.shared.delegate as! AppDelegate
         self.navigationController?.isNavigationBarHidden = true
         
+        Global.shared.isMasterTurn = true
+        
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.didReceiveData(notification:)), name:Notifications.MPCDidReceiveData, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.updateConnectedStatus(notification:)), name:Notifications.UpdateConnectedStatus, object: nil);
@@ -152,7 +154,7 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
     
     // MARK: - Actions
     func tappedChangeBack(_ sender: Any) {
-        appDelegate.ppService.send(dataInfo: "color")
+        //appDelegate.ppService.send(dataInfo: "color")
     }
     
     @IBAction func pantoneMoodTapped(_ sender: Any) {
@@ -171,9 +173,15 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
             self.waitWarningLabel.text = Constants.connectFirstWarning
             self.waitWarningLabel.isHidden = false
             return
+        } else {
+            let willStartPlaying = DataProtocol.prepareToStartGame()
+            if self.appDelegate.ppService.send(dataInfo: willStartPlaying) {
+                performSegue(withIdentifier: "startHostFlowSegue", sender: self)
+            } else {
+                self.waitWarningLabel.text = "Something happened, try again..."
+            }
         }
     }
-    
     
     // MARK: - Notifications objc funcs
     @objc func didReceiveData(notification: NSNotification) {
@@ -183,24 +191,13 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
         let data = userInfo.object(forKey: Notifications.keyData) as! String
         
         if let peer = Global.shared.connectedPeer, peer == peerID {
-            print("Changed by \(peer.displayName) with data \(data)")
+            let dictionary = DataProtocol.decodeData(data: data)
             
-            let rd = arc4random() % 5
-            switch rd {
-            case 0:
-                self.view.backgroundColor = UIColor.cyan
-            case 1:
-                self.view.backgroundColor = UIColor.green
-            case 2:
-                self.view.backgroundColor = UIColor.blue
-            case 3:
-                self.view.backgroundColor = UIColor.brown
-            case 4:
-                self.view.backgroundColor = UIColor.purple
-            case 5:
-                self.view.backgroundColor = UIColor.gray
-            default:
-                self.view.backgroundColor = UIColor.black
+            let data = String(describing:dictionary["data"]!)
+            print("----- \(data)")
+            
+            if data == DataProtocol.gameStarted {
+                performSegue(withIdentifier: "startGuestFlowSegue", sender: self)
             }
         }
     }
@@ -242,6 +239,10 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
     // MARK: Unwind Segues
     @IBAction func unwindToTeste(segue: UIStoryboardSegue) {
         print("Is back!")
+    }
+    
+    @IBAction func unwindToPlayLostConnection(segue:UIStoryboardSegue) {
+        
     }
     
     @IBAction func changeMood(_ sender: Any) {

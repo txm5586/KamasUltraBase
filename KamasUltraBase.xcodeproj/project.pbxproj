@@ -20,7 +20,7 @@
 		AD7195BF1FE4A67E00F65030 /* PlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7195BB1FE4A67E00F65030 /* PlayViewController.swift */; };
 		AD7195C11FE4A6A100F65030 /* Peer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7195C01FE4A6A100F65030 /* Peer.swift */; };
 		AD7195C31FE4A94C00F65030 /* Base.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD7195C21FE4A94C00F65030 /* Base.storyboard */; };
-		AD773A0F1FE6FE69001577BF /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD773A0E1FE6FE69001577BF /* FirstViewController.swift */; };
+		AD773A0F1FE6FE69001577BF /* ReceiveNudesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD773A0E1FE6FE69001577BF /* ReceiveNudesViewController.swift */; };
 		AD773A151FE82045001577BF /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD773A141FE82045001577BF /* SettingsTableViewController.swift */; };
 		AD93EB1C1FEA051D00301D0D /* WaitingForPartnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD93EB1B1FEA051D00301D0D /* WaitingForPartnerViewController.swift */; };
 		AD93EB1E1FEA10C700301D0D /* AnimatedBodyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD93EB1D1FEA10C700301D0D /* AnimatedBodyViewController.swift */; };
@@ -34,7 +34,7 @@
 		AD93EB311FEA13C000301D0D /* Sexy.gif in Resources */ = {isa = PBXBuildFile; fileRef = AD93EB291FEA13C000301D0D /* Sexy.gif */; };
 		AD93EB321FEA13C000301D0D /* Excitement.gif in Resources */ = {isa = PBXBuildFile; fileRef = AD93EB2A1FEA13C000301D0D /* Excitement.gif */; };
 		ADAD91F31FEA3AC300E848E9 /* SetMoodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAD91F21FEA3AC200E848E9 /* SetMoodViewController.swift */; };
-		ADDB26301FE9C50E00B60ECF /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB262F1FE9C50E00B60ECF /* SecondViewController.swift */; };
+		ADDB26301FE9C50E00B60ECF /* ActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB262F1FE9C50E00B60ECF /* ActionViewController.swift */; };
 		ADDB26321FE9F85300B60ECF /* FlowHost.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADDB26311FE9F85300B60ECF /* FlowHost.storyboard */; };
 		ADDB26341FE9F88300B60ECF /* FlowGuest.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADDB26331FE9F88300B60ECF /* FlowGuest.storyboard */; };
 /* End PBXBuildFile section */
@@ -55,7 +55,7 @@
 		AD7195BB1FE4A67E00F65030 /* PlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayViewController.swift; sourceTree = "<group>"; };
 		AD7195C01FE4A6A100F65030 /* Peer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Peer.swift; sourceTree = "<group>"; };
 		AD7195C21FE4A94C00F65030 /* Base.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Base.storyboard; sourceTree = "<group>"; };
-		AD773A0E1FE6FE69001577BF /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
+		AD773A0E1FE6FE69001577BF /* ReceiveNudesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveNudesViewController.swift; sourceTree = "<group>"; };
 		AD773A141FE82045001577BF /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		AD93EB1B1FEA051D00301D0D /* WaitingForPartnerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaitingForPartnerViewController.swift; sourceTree = "<group>"; };
 		AD93EB1D1FEA10C700301D0D /* AnimatedBodyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatedBodyViewController.swift; sourceTree = "<group>"; };
@@ -69,7 +69,7 @@
 		AD93EB291FEA13C000301D0D /* Sexy.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Sexy.gif; sourceTree = "<group>"; };
 		AD93EB2A1FEA13C000301D0D /* Excitement.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Excitement.gif; sourceTree = "<group>"; };
 		ADAD91F21FEA3AC200E848E9 /* SetMoodViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetMoodViewController.swift; sourceTree = "<group>"; };
-		ADDB262F1FE9C50E00B60ECF /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		ADDB262F1FE9C50E00B60ECF /* ActionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionViewController.swift; sourceTree = "<group>"; };
 		ADDB26311FE9F85300B60ECF /* FlowHost.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FlowHost.storyboard; sourceTree = "<group>"; };
 		ADDB26331FE9F88300B60ECF /* FlowGuest.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FlowGuest.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -116,8 +116,8 @@
 				AD7195921FE49BC900F65030 /* Action.storyboard */,
 				AD7195951FE49BC900F65030 /* Assets.xcassets */,
 				AD71959A1FE49BC900F65030 /* Info.plist */,
-				AD773A0E1FE6FE69001577BF /* FirstViewController.swift */,
-				ADDB262F1FE9C50E00B60ECF /* SecondViewController.swift */,
+				AD773A0E1FE6FE69001577BF /* ReceiveNudesViewController.swift */,
+				ADDB262F1FE9C50E00B60ECF /* ActionViewController.swift */,
 			);
 			path = KamasUltraBase;
 			sourceTree = "<group>";
@@ -255,8 +255,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD65E7141FEAC98B00728FA7 /* SendNudesViewController.swift in Sources */,
-				ADDB26301FE9C50E00B60ECF /* SecondViewController.swift in Sources */,
-				AD773A0F1FE6FE69001577BF /* FirstViewController.swift in Sources */,
+				ADDB26301FE9C50E00B60ECF /* ActionViewController.swift in Sources */,
+				AD773A0F1FE6FE69001577BF /* ReceiveNudesViewController.swift in Sources */,
 				AD7195BF1FE4A67E00F65030 /* PlayViewController.swift in Sources */,
 				AD7195BC1FE4A67E00F65030 /* NearbyPeersTableViewCell.swift in Sources */,
 				AD7195BD1FE4A67E00F65030 /* NearbyPeersTableViewController.swift in Sources */,

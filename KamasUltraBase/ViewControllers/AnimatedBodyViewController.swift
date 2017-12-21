@@ -10,6 +10,8 @@ import UIKit
 import AudioToolbox
 
 class AnimatedBodyViewController: UIViewController {
+    private var appDelegate: AppDelegate!
+    
     @IBOutlet weak var waveView: UIView!
     @IBOutlet var actionButtons: [UIButton]!
     
@@ -24,12 +26,14 @@ class AnimatedBodyViewController: UIViewController {
     @IBOutlet weak var bodyVIew: UIView!
     @IBOutlet weak var confirmOutlet: UIButton!
     @IBOutlet weak var waveGif: UIImageView!
+    @IBOutlet weak var bodyImage: UIImageView!
     
     @IBOutlet weak var kiss: UIButton!
     @IBOutlet weak var lick: UIButton!
     @IBOutlet weak var suck: UIButton!
     @IBOutlet weak var touch: UIButton!
     @IBOutlet weak var random: UIButton!
+    
     
     //Parameters to give a location to the gradient and move it on the body
     var a: NSNumber = 0.00
@@ -38,21 +42,24 @@ class AnimatedBodyViewController: UIViewController {
     var d: NSNumber = 0.55
     var e: NSNumber = 1.00
     
-    //Our colors for the gradient
-    //Light blue
-//    let gradientColor1 = UIColor(red: 53/255, green: 208/255, blue: 243/255, alpha: 1).cgColor
-//    //Dark green
-//    let gradientColor2 = UIColor(red: 24/255, green: 129/255, blue: 125/255, alpha: 1).cgColor
-//    //Red
-//    let gradientColor3 = UIColor(red: 255/255, green: 55/255, blue: 55/255, alpha: 1).cgColor
-    
     override func viewWillAppear(_ animated: Bool) {
         bodyPartLabel.text = BodyPart.Waist.rawValue
         bodyPartLabel.frame.origin.y = CGFloat(truncating: c) * UIScreen.main.bounds.height - 10
+        
+        let userDefaults = UserDefaults.standard
+        let gender = userDefaults.integer(forKey: UserKey.gender)
+        
+        if gender == Constants.male {
+            bodyImage.image = #imageLiteral(resourceName: "TransparentBodyMan")
+        } else if gender == Constants.female {
+            bodyImage.image = #imageLiteral(resourceName: "TransparentBodyWoman")
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        appDelegate = UIApplication.shared.delegate as! AppDelegate
         
         createGradientLayer()
        
@@ -66,6 +73,13 @@ class AnimatedBodyViewController: UIViewController {
         
         waveGif.loadGif(name: mood!)
         waveGif.backgroundColor = UIColor.white
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(AnimatedBodyViewController.lostConnectionWithPeer(notification:)), name:Notifications.DidLostConnectionWithPeer, object: nil);
+    }
+    
+    @objc func lostConnectionWithPeer(notification: NSNotification) {
+        print(" -------- Is going to Unwind -------- ")
+        unwindByLostOfConnection()
     }
     
     //Hide the status bar
@@ -232,5 +246,18 @@ class AnimatedBodyViewController: UIViewController {
             enableSwipe = 1 //Enable the swipe of the red line
             enableTouch = 0 //Disable the touch to make the body bigger again
         }
+    }
+    
+    func unwindByLostOfConnection() {
+        performSegue(withIdentifier: "uwindFromBodyToPlay", sender: self)
+    }
+    
+    @IBAction func disconnectTapped(_ sender: Any) {
+        self.appDelegate.ppService.disconnectPeer()
+        self.unwindByLostOfConnection()
+    }
+    
+    @IBAction func unwindToAnimatedBodyFlow(segue:UIStoryboardSegue) {
+        
     }
 }

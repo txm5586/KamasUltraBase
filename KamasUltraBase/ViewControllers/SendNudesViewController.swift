@@ -17,6 +17,7 @@ import UIKit
 import AudioToolbox
 
 class SendNudesViewController: UIViewController {
+    var appDelegate: AppDelegate!
     
     var divisionParam: CGFloat!
     
@@ -36,9 +37,19 @@ class SendNudesViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.appDelegate = UIApplication.shared.delegate as! AppDelegate
+        
         configViews()
         configAction()
         configWave()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(SendNudesViewController.lostConnectionWithPeer(notification:)), name:Notifications.DidLostConnectionWithPeer, object: nil);
+    }
+    
+    @objc func lostConnectionWithPeer(notification: NSNotification) {
+        print(" -------- Is going to Unwind -------- ")
+        unwindByLostOfConnection()
     }
     
     override var prefersStatusBarHidden: Bool {
@@ -86,7 +97,6 @@ class SendNudesViewController: UIViewController {
     }
     
     func configViews(){
-        
         divisionParam = (view.frame.size.width/2)/0.61
         
         //CardView
@@ -103,6 +113,12 @@ class SendNudesViewController: UIViewController {
         semiCircleTrashButton.clipsToBounds = true
         self.view.bringSubview(toFront: trashImageView)
    
+    }
+    
+    func resetView() {
+        cardView.center = self.view.center
+        typeFire.image = #imageLiteral(resourceName: "fosforo")
+        cardView.transform = .identity
     }
     
     @IBAction func panGestureValueChanged(_ sender: UIPanGestureRecognizer) {
@@ -127,10 +143,10 @@ class SendNudesViewController: UIViewController {
             
             if (cardView.center.y <  (view.frame.size.height/2)){ // UP
                 configCardView()
-                typeFire.image = UIImage(named:"fosforo1")
+                typeFire.image = #imageLiteral(resourceName: "fosforo")
              }else{
                 configCardView()
-                typeFire.image = UIImage(named:"fosforo3")
+                typeFire.image = #imageLiteral(resourceName: "fosforoOut")
                 AudioServicesPlayAlertSound(kSystemSoundID_Vibrate) //Vibration
             }
         }
@@ -140,11 +156,19 @@ class SendNudesViewController: UIViewController {
                 UIView.animate(withDuration: 0.3, animations: {
                     cardView.center = CGPoint(x: cardView.center.x, y: cardView.center.y-550)
                 })
+                // MARK: Run Send Data App Delegate
+                let data: String = DataProtocol.prepareToSendAction(action: Global.shared.selectedAction, body: Global.shared.selectedBodyPart)
+                
+                if self.appDelegate.ppService.send(dataInfo: data) {
+                    performSegueCheckingFlow()
+                } else {
+                    // Reset View
+                    resetView()
+                }
                 return
             }
             else if (cardView.center.y > (view.frame.size.height/4)) { // Moved to down
                 UIView.animate(withDuration: 0.3, animations: {
-                    
                     cardView.center = CGPoint(x: cardView.center.x, y: cardView.center.y+600)
                 })
                 
@@ -152,8 +176,22 @@ class SendNudesViewController: UIViewController {
                 UIView.animate(withDuration: 1, delay: 0.0, options: [.curveLinear, .autoreverse], animations: {
                     self.semiCircleTrashButton.alpha = 1.0 }, completion: nil)
                 
+                dismiss(animated: true, completion: nil)
                 return
             }
         }
+    }
+    
+    func performSegueCheckingFlow() {
+        if Global.shared.isMaster {
+            performSegue(withIdentifier: "goToActionFromHostSegue", sender: self)
+        } else {
+            // UNWIN TO WAITING SCREEN
+            performSegue(withIdentifier: "unwindToActionFromSendSegue", sender: self)
+        }
+    }
+    
+    func unwindByLostOfConnection() {
+        performSegue(withIdentifier: "uwindFromSendToPlay", sender: self)
     }
 }

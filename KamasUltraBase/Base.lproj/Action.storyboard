@@ -10,29 +10,53 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Action View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="KamasUltraBase" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ActionViewController" customModule="KamasUltraBase" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NKq-ph-93E">
-                                <rect key="frame" x="164" y="446" width="46" height="30"/>
+                                <rect key="frame" x="147" y="318" width="80" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
+                                <state key="normal" title="Keep Going"/>
                                 <connections>
-                                    <action selector="changeBackTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="fOL-lm-t3S"/>
+                                    <action selector="keepPlayingTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="u6m-zV-7Nw"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <segue destination="yZw-bF-9oe" kind="show" identifier="restartAsHostSegue" id="tIg-Ta-p2O"/>
+                        <segue destination="SKS-57-DEM" kind="show" identifier="restartAsGuestSegue" id="KDf-yx-QJV"/>
+                        <segue destination="xz4-hp-7Rt" kind="unwind" identifier="unwindFromActionToPlay" unwindAction="unwindToPlayLostConnectionWithSegue:" id="V1a-qo-luG"/>
+                        <segue destination="xz4-hp-7Rt" kind="unwind" identifier="unwindAsHostSegue" unwindAction="unwindToAnimatedBodyFlowWithSegue:" id="a8X-zP-wIG"/>
+                        <segue destination="xz4-hp-7Rt" kind="unwind" identifier="unwindAsGuestSegue" unwindAction="unwindToWaitingFlowWithSegue:" id="VFq-wA-cix"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <exit id="xz4-hp-7Rt" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
+        </scene>
+        <!--FlowHost-->
+        <scene sceneID="VLp-Mk-Um6">
+            <objects>
+                <viewControllerPlaceholder storyboardName="FlowHost" id="yZw-bF-9oe" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nEZ-Uo-CIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="722" y="254"/>
+        </scene>
+        <!--FlowGuest-->
+        <scene sceneID="cY3-dQ-k94">
+            <objects>
+                <viewControllerPlaceholder storyboardName="FlowGuest" id="SKS-57-DEM" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rob-Lf-EK1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="755" y="469"/>
         </scene>
     </scenes>
 </document>

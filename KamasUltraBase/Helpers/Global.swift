@@ -29,11 +29,13 @@ public class FirstLauch {
             
             MoodConfig.changeMood(mood: Mood.Sexy)
         } else {
-            let mood = Mood(rawValue: userDefaults.string(forKey: UserKey.mood)!)
-            MoodConfig.changeMood(mood: mood!)
+            if userDefaults.bool(forKey: UserKey.mood) {
+                let mood = Mood(rawValue: userDefaults.string(forKey: UserKey.mood)!)
+                MoodConfig.changeMood(mood: mood!)
+            } else {
+                MoodConfig.changeMood(mood: Mood.Sexy)
+            }
         }
-        
-        
     }
 }
 
@@ -43,9 +45,13 @@ class Global {
     var connectingPeer : MCPeerID?
     var connectedPeer : MCPeerID?
     var isMaster : Bool = false
+    var isMasterTurn: Bool = true
     
     var selectedAction : Action!
     var selectedBodyPart : BodyPart!
+    
+    var actionReceived : Action!
+    var bodyPartReceived : BodyPart!
     
     // MARK: Relative to the settings of current user
     
@@ -114,6 +120,8 @@ public class Notifications {
     static let MPCDidReceiveData = NSNotification.Name("MPC_ReceiveDataNotification")
     static let UpdateConnectedStatus = NSNotification.Name("UpdateConnectedStateNotification")
     
+    static let DidLostConnectionWithPeer = NSNotification.Name("MPC_DidLostConnectionWithPeer")
+    
     static let keyPeerID = "peerID"
     static let keyState = "state"
     static let keyData = "data"
@@ -129,6 +137,7 @@ enum Mood : String {
     case Excitement
     case Crazy
     
+    static var count: Int { return Mood.Crazy.hashValue + 1}
 }
 
 struct MoodConfig {
@@ -226,3 +235,57 @@ extension UIColor {
         )
     }
 }
+
+public class DataProtocol {
+    static let separator : Character = "#"
+    static let empty = "."
+    
+    static let gameStarted = "GS"
+    static let actionSent = "AS"
+    static let actionScreenFinished = "AF"
+    
+    static func prepareToStartGame() -> String {
+        return gameStarted
+    }
+    
+    static func prepareToFinishAction() -> String {
+        return actionScreenFinished
+    }
+    
+    static func prepareToSendAction(action: Action, body: BodyPart) -> String {
+        return "\(actionSent)#\(action.rawValue)#\(body.rawValue)"
+    }
+    
+    static func decodeData(data: String) -> [String : Any] {
+        let dataArray = data.split(separator: separator)
+        
+        var dictionary = [String:Any]()
+        
+        if dataArray[0] == actionSent {
+            let action = Action(rawValue: Int(dataArray[1])!)!
+            let body = BodyPart(rawValue: String(dataArray[2]))!
+            
+            dictionary = ["data":dataArray[0], "action":action, "body":body]
+        } else {
+            dictionary = ["data":dataArray[0]]
+        }
+        
+        return dictionary
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

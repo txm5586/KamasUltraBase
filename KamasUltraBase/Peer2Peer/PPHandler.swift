@@ -47,7 +47,7 @@ class PPHandler : NSObject {
     }
     
     // MARK: Internal Functions
-    func send(dataInfo : String) {
+    func send(dataInfo : String) -> Bool {
         NSLog("%@", "sendColor: \(dataInfo) to \(session.connectedPeers.count) peers")
         
         if session.connectedPeers.count > 0 {
@@ -56,9 +56,11 @@ class PPHandler : NSObject {
             }
             catch let error {
                 NSLog("%@", "Error for sending: \(error)")
+                return false
             }
+            return true
         }
-        
+        return false
     }
     
     func invitePeer(peerID: MCPeerID) {
@@ -91,6 +93,7 @@ class PPHandler : NSObject {
         let alert = UIAlertController(title: "Lost connection", message: "\(peerID.displayName) disconnected", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
             DispatchQueue.main.async { NotificationCenter.default.post(name: Notifications.UpdateConnectedStatus, object: nil, userInfo: nil) }
+            DispatchQueue.main.async { NotificationCenter.default.post(name: Notifications.DidLostConnectionWithPeer, object: nil, userInfo: nil) }
         }))
         
         presentAtTopViewController(view: alert)
@@ -158,7 +161,10 @@ extension PPHandler : MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         NSLog("%@", "foundPeer: \(peerID)")
+        
         let isPeerOnList = Global.shared.peers.contains(where: { $0.peerID == peerID })
+        
+        print("---- Quantidade \(isPeerOnList))")
         
         if !isPeerOnList {
             Global.shared.peers.append(Peer(peerID: peerID))
@@ -175,6 +181,7 @@ extension PPHandler : MCNearbyServiceBrowserDelegate {
         Global.shared.peers = allPeersButLostOne
         
         if let cp = Global.shared.connectedPeer, cp == peerID {
+            lostConnectionAlert(peerID: peerID)
             Global.shared.connectedPeer = nil
         } else if let cp = Global.shared.connectingPeer, cp == peerID {
             Global.shared.connectingPeer = nil
@@ -190,6 +197,7 @@ extension PPHandler : MCSessionDelegate {
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         NSLog("%@", "peer \(peerID) didChangeState: \(state.rawValue)")
+        let userInfo = [Notifications.keyPeerID : peerID, Notifications.keyState : state.rawValue] as [String : Any]
         
         Global.shared.connectingPeer = nil
         
@@ -202,7 +210,6 @@ extension PPHandler : MCSessionDelegate {
             self.lostConnectionAlert(peerID: peerID)
         }
         
-        let userInfo = [Notifications.keyPeerID : peerID, Notifications.keyState : state.rawValue] as [String : Any]
         DispatchQueue.main.async { NotificationCenter.default.post(name: Notifications.MPCDidChangeState, object: nil, userInfo: userInfo) }
     }
     
