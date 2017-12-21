@@ -117,7 +117,7 @@ class SendNudesViewController: UIViewController {
     
     func resetView() {
         cardView.center = self.view.center
-        typeFire.image = #imageLiteral(resourceName: "fosforo")
+        typeFire.image = #imageLiteral(resourceName: "matches")
         cardView.transform = .identity
     }
     
@@ -143,10 +143,10 @@ class SendNudesViewController: UIViewController {
             
             if (cardView.center.y <  (view.frame.size.height/2)){ // UP
                 configCardView()
-                typeFire.image = #imageLiteral(resourceName: "fosforo")
+                typeFire.image = #imageLiteral(resourceName: "matches")
              }else{
                 configCardView()
-                typeFire.image = #imageLiteral(resourceName: "fosforoOut")
+                typeFire.image = #imageLiteral(resourceName: "matchesOut")
                 AudioServicesPlayAlertSound(kSystemSoundID_Vibrate) //Vibration
             }
         }
