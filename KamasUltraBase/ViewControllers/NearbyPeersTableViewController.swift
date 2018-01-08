@@ -60,12 +60,12 @@ class NearbyPeersTableViewController: UITableViewController {
     
     // MARK: Notifications objc funcs
     @objc func foundPeer(notification: NSNotification) {
-        print(" *** Found Peer: Table realoaded")
+        Global.log(className: self.theClassName, msg: "Found Peer: Table Reloaded")
         self.tableView.reloadData()
     }
     
     @objc func lostPeer(notification: NSNotification) {
-        print(" *** Lost Peer: Table realoaded")
+        Global.log(className: self.theClassName, msg: "Lost Peer: Table reloaded")
         self.tableView.reloadData()
     }
     
@@ -98,7 +98,6 @@ class NearbyPeersTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        print(Global.shared.peers.count)
         return Global.shared.peers.count + 1
     }
     

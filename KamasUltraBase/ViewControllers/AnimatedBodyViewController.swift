@@ -78,7 +78,6 @@ class AnimatedBodyViewController: UIViewController {
     }
     
     @objc func lostConnectionWithPeer(notification: NSNotification) {
-        print(" -------- Is going to Unwind -------- ")
         unwindByLostOfConnection()
     }
     
@@ -249,6 +248,7 @@ class AnimatedBodyViewController: UIViewController {
     }
     
     func unwindByLostOfConnection() {
+        Global.log(className: self.theClassName, msg: "Is going to Unwind")
         performSegue(withIdentifier: "uwindFromBodyToPlay", sender: self)
     }
     
@@ -258,6 +258,11 @@ class AnimatedBodyViewController: UIViewController {
     }
     
     @IBAction func unwindToAnimatedBodyFlow(segue:UIStoryboardSegue) {
-        
+        Global.shared.isMasterTurn = !Global.shared.isMasterTurn
+        /*if Global.shared.isMaster {
+            Global.shared.isMasterTurn = true
+        } else {
+            Global.shared.isMasterTurn = false
+        }*/
     }
 }

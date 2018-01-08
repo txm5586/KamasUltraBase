@@ -15,10 +15,7 @@ public class FirstLauch {
     init() {
         let userDefaults = UserDefaults.standard
         
-        print("Opened")
         if !userDefaults.bool(forKey: UserKey.isfirstLaunch) {
-            print("Is a first launch")
-            
             //Put any code here and it will be executed only once.
             let userDefaults = UserDefaults.standard
             
@@ -63,6 +60,10 @@ class Global {
             static let instance = Global()
         }
         return Static.instance
+    }
+    
+    static func log(className: String, msg: String) {
+        print("--- [\(className)] \(msg)")
     }
 }
 
@@ -148,7 +149,7 @@ struct MoodConfig {
     static var gradientColor4 = UIColor(red: 25/255, green: 42/255, blue: 240/255, alpha: 1).cgColor
 
     static func changeMood(mood: Mood) {
-        print("Is going to change to \(mood.rawValue)")
+        Global.log(className: "MoodConfig", msg: "Is going to change to \(mood.rawValue)")
         UserDefaults.standard.set(mood.rawValue, forKey: UserKey.mood)
         currentMood = mood
         switch mood {
@@ -274,18 +275,8 @@ public class DataProtocol {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+extension NSObject {
+    var theClassName: String {
+        return NSStringFromClass(type(of: self))
+    }
+}

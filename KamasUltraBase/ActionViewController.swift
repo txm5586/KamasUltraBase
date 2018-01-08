@@ -23,14 +23,13 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        print("whats happenings?")
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(ActionViewController.lostConnectionWithPeer(notification:)), name:Notifications.DidLostConnectionWithPeer, object: nil);
         
         changeBackground()
         transitionGradients()
     }
-    
+    /*
     func skipActionScreen() {
         
         Global.shared.isMasterTurn = !Global.shared.isMasterTurn
@@ -59,29 +58,29 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
                 performSegue(withIdentifier: "unwindAsGuestSegue", sender: self)
             }
         }
-    }
+    }*/
     
     @objc func lostConnectionWithPeer(notification: NSNotification) {
-        print(" -------- Is going to Unwind -------- ")
         unwindByLostOfConnection()
     }
     
     func unwindByLostOfConnection() {
+        Global.log(className: self.theClassName, msg: "Is going to Unwind")
         performSegue(withIdentifier: "unwindFromActionToPlay", sender: self)
     }
     
     @IBAction func keepPlayingTapped(_ sender: Any) {
-        Global.shared.isMasterTurn = !Global.shared.isMasterTurn
+        //Global.shared.isMasterTurn = !Global.shared.isMasterTurn
         
         if Global.shared.isMaster {
             // Check Turn
             // IF TURN
                 // UNWIND AS HOST
-            if Global.shared.isMasterTurn {
-                print("----- Is going unwind as Host ------")
+            if !Global.shared.isMasterTurn {
+                Global.log(className: self.theClassName, msg: "Is going to unwind as Host")
                 performSegue(withIdentifier: "unwindAsHostSegue", sender: self)
             } else {
-                print("----- Is going to restard as guest ------")
+                Global.log(className: self.theClassName, msg: "Is going to restart as guest")
                 performSegue(withIdentifier: "restartAsGuestSegue", sender: self)
             }
             // IF NOT TURN
@@ -89,11 +88,13 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
         } else {
             // Check Turn
             // IF TURN
-            if !Global.shared.isMasterTurn {
+            if Global.shared.isMasterTurn {
+                Global.log(className: self.theClassName, msg: "Is going to restart as host")
                 performSegue(withIdentifier: "restartAsHostSegue", sender: self)
             // IF NOT TURN
                 // UNWIND AS GUEST
             } else {
+                Global.log(className: self.theClassName, msg: "Is going to uwind as guest")
                 performSegue(withIdentifier: "unwindAsGuestSegue", sender: self)
             }
         }

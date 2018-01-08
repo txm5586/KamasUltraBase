@@ -31,14 +31,14 @@ class PPHandler : NSObject {
         
         super.init()
         
-        NSLog("%@", "Started Adversiting")
+        //NSLog("%@", "Started Adversiting")
         self.serviceAdvertiser.delegate = self
         self.serviceAdvertiser.startAdvertisingPeer()
-        NSLog("%@", "Started Adversiting")
+        //NSLog("%@", "Started Adversiting")
         
         self.serviceBrowser.delegate = self
         self.serviceBrowser.startBrowsingForPeers()
-        NSLog("%@", "Started Browsing")
+        //NSLog("%@", "Started Browsing")
     }
     
     deinit {
@@ -48,14 +48,14 @@ class PPHandler : NSObject {
     
     // MARK: Internal Functions
     func send(dataInfo : String) -> Bool {
-        NSLog("%@", "sendColor: \(dataInfo) to \(session.connectedPeers.count) peers")
+        //NSLog("%@", "sendColor: \(dataInfo) to \(session.connectedPeers.count) peers")
         
         if session.connectedPeers.count > 0 {
             do {
                 try self.session.send(dataInfo.data(using: .utf8)!, toPeers: session.connectedPeers, with: .reliable)
             }
             catch let error {
-                NSLog("%@", "Error for sending: \(error)")
+                //NSLog("%@", "Error for sending: \(error)")
                 return false
             }
             return true
@@ -142,11 +142,11 @@ class PPHandler : NSObject {
 extension PPHandler : MCNearbyServiceAdvertiserDelegate {
     
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
-        NSLog("%@", "didNotStartAdvertisingPeer: \(error)")
+        //NSLog("%@", "didNotStartAdvertisingPeer: \(error)")
     }
     
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        NSLog("%@", "didReceiveInvitationFromPeer \(peerID)")
+        //NSLog("%@", "didReceiveInvitationFromPeer \(peerID)")
         self.receivedInvitationAlert(peerID: peerID, invitationHandler: invitationHandler)
     }
     
@@ -156,15 +156,13 @@ extension PPHandler : MCNearbyServiceAdvertiserDelegate {
 extension PPHandler : MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
-        NSLog("%@", "didNotStartBrowsingForPeers: \(error)")
+        //NSLog("%@", "didNotStartBrowsingForPeers: \(error)")
     }
     
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
-        NSLog("%@", "foundPeer: \(peerID)")
+        //NSLog("%@", "foundPeer: \(peerID)")
         
         let isPeerOnList = Global.shared.peers.contains(where: { $0.peerID == peerID })
-        
-        print("---- Quantidade \(isPeerOnList))")
         
         if !isPeerOnList {
             Global.shared.peers.append(Peer(peerID: peerID))
@@ -174,7 +172,7 @@ extension PPHandler : MCNearbyServiceBrowserDelegate {
     }
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        NSLog("%@", "lostPeer: \(peerID)")
+        //NSLog("%@", "lostPeer: \(peerID)")
         
         
         let allPeersButLostOne = Global.shared.peers.filter({$0.peerID != peerID})
@@ -196,7 +194,7 @@ extension PPHandler : MCNearbyServiceBrowserDelegate {
 extension PPHandler : MCSessionDelegate {
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        NSLog("%@", "peer \(peerID) didChangeState: \(state.rawValue)")
+        //NSLog("%@", "peer \(peerID) didChangeState: \(state.rawValue)")
         let userInfo = [Notifications.keyPeerID : peerID, Notifications.keyState : state.rawValue] as [String : Any]
         
         Global.shared.connectingPeer = nil
@@ -214,7 +212,7 @@ extension PPHandler : MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        NSLog("%@", "didReceiveData: \(data)")
+        //NSLog("%@", "didReceiveData: \(data)")
         
         let str = String(data: data, encoding: .utf8)!
         let userInfo = [Notifications.keyPeerID : peerID, Notifications.keyData : str] as [String : Any]
@@ -222,15 +220,15 @@ extension PPHandler : MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-        NSLog("%@", "didReceiveStream")
+        //NSLog("%@", "didReceiveStream")
     }
     
     func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
-        NSLog("%@", "didStartReceivingResourceWithName")
+        //NSLog("%@", "didStartReceivingResourceWithName")
     }
     
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
-        NSLog("%@", "didFinishReceivingResourceWithName")
+        //NSLog("%@", "didFinishReceivingResourceWithName")
     }
     
 }

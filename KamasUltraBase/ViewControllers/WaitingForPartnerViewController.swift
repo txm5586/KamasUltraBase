@@ -31,12 +31,11 @@ class WaitingForPartnerViewController: UIViewController {
     
     // It could be a protocol!
     @objc func lostConnectionWithPeer(notification: NSNotification) {
-        print(" -------- Is going to Unwind -------- ")
         unwindByLostOfConnection()
     }
     
     @objc func didReceiveDataFromPeer(notification: NSNotification) {
-        print(" -------- Received Data -------- ")
+        Global.log(className: self.theClassName, msg: "Received Data")
         let userInfo = NSDictionary(dictionary: notification.userInfo!)
         
         let peerID = userInfo.object(forKey: Notifications.keyPeerID) as! MCPeerID
@@ -46,7 +45,6 @@ class WaitingForPartnerViewController: UIViewController {
             let dictionary = DataProtocol.decodeData(data: data)
             
             let data = String(describing:dictionary["data"]!)
-            print("----- \(data)")
             
             if data == DataProtocol.actionSent {
                 Global.shared.actionReceived = dictionary["action"] as! Action
@@ -76,7 +74,7 @@ class WaitingForPartnerViewController: UIViewController {
         })
         { (true) in
             // fade out
-            sleep(15)
+            //sleep(15)
             UIView.animate(withDuration: 2.5, animations: {
                 self.tipsLabel.alpha = 0.0
             })
@@ -88,12 +86,24 @@ class WaitingForPartnerViewController: UIViewController {
     }
     
     func unwindByLostOfConnection() {
+        Global.log(className: self.theClassName, msg: "Is going to Unwind")
         performSegue(withIdentifier: "unwindFromWaitToPlay", sender: self)
     }
     
     @IBAction func disconnectTapped(_ sender: Any) {
         self.appDelegate.ppService.disconnectPeer()
         self.unwindByLostOfConnection()
+    }
+    
+    @IBAction func unwindToWaitingBodyFlow(segue:UIStoryboardSegue) {
+        Global.shared.isMasterTurn = !Global.shared.isMasterTurn
+        /*if Global.shared.isMaster {
+            Global.log(className: self.theClassName, msg: "** Is NOT my turn")
+            Global.shared.isMasterTurn = false
+        } else {
+            Global.log(className: self.theClassName, msg: "** IT IS MY TURN")
+            Global.shared.isMasterTurn = true
+        }*/
     }
     
     func animateDot () -> Void {

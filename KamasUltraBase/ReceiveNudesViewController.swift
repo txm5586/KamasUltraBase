@@ -15,8 +15,7 @@ class ReceiveNudesViewController: UIViewController {
     @IBOutlet weak var myView: UIView!
     
     public func checkActionReceived() {
-        print("--------------------------- 2")
-        print("------ Checking action \(Global.shared.actionReceived)")
+        Global.log(className: self.theClassName, msg: "Checking action \(Global.shared.actionReceived)")
         
         self.actionReceivedImage.image = UIImage(named: "\(Global.shared.actionReceived!)")
         bodyPartLabel.text = Global.shared.bodyPartReceived.rawValue
@@ -25,7 +24,6 @@ class ReceiveNudesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print("---------------------------")
         checkActionReceived()
         
         // Do any additional setup after loading the view.
@@ -44,11 +42,11 @@ class ReceiveNudesViewController: UIViewController {
     }
     
     @objc func lostConnectionWithPeer(notification: NSNotification) {
-        print(" -------- Is going to Unwind -------- ")
         unwindByLostOfConnection()
     }
     
     func unwindByLostOfConnection() {
+        Global.log(className: self.theClassName, msg: "Is going to Unwind")
         performSegue(withIdentifier: "unwindFromReceiveToPlay", sender: self)
     }
     

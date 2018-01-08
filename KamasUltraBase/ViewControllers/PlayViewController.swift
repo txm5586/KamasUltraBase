@@ -194,7 +194,6 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
             let dictionary = DataProtocol.decodeData(data: data)
             
             let data = String(describing:dictionary["data"]!)
-            print("----- \(data)")
             
             if data == DataProtocol.gameStarted {
                 performSegue(withIdentifier: "startGuestFlowSegue", sender: self)
@@ -238,7 +237,7 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
     
     // MARK: Unwind Segues
     @IBAction func unwindToTeste(segue: UIStoryboardSegue) {
-        print("Is back!")
+        
     }
     
     @IBAction func unwindToPlayLostConnection(segue:UIStoryboardSegue) {

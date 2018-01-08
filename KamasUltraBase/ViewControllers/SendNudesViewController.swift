@@ -48,7 +48,6 @@ class SendNudesViewController: UIViewController {
     }
     
     @objc func lostConnectionWithPeer(notification: NSNotification) {
-        print(" -------- Is going to Unwind -------- ")
         unwindByLostOfConnection()
     }
     
@@ -192,6 +191,7 @@ class SendNudesViewController: UIViewController {
     }
     
     func unwindByLostOfConnection() {
+        Global.log(className: self.theClassName, msg: "Is going to Unwind")
         performSegue(withIdentifier: "uwindFromSendToPlay", sender: self)
     }
 }
