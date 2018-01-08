@@ -27,7 +27,8 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(ActionViewController.lostConnectionWithPeer(notification:)), name:Notifications.DidLostConnectionWithPeer, object: nil);
         
-        skipActionScreen()
+        changeBackground()
+        transitionGradients()
     }
     
     func skipActionScreen() {
