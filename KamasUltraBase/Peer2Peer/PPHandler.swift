@@ -54,7 +54,7 @@ class PPHandler : NSObject {
             do {
                 try self.session.send(dataInfo.data(using: .utf8)!, toPeers: session.connectedPeers, with: .reliable)
             }
-            catch let error {
+            catch {//let error {
                 //NSLog("%@", "Error for sending: \(error)")
                 return false
             }
@@ -65,7 +65,9 @@ class PPHandler : NSObject {
     
     func invitePeer(peerID: MCPeerID) {
         Global.shared.isMaster = true
+        
         self.serviceBrowser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
+        
     }
     
     func receivedInvitationAlert(peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void) {

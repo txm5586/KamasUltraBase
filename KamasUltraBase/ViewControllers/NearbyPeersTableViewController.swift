@@ -160,7 +160,6 @@ class NearbyPeersTableViewController: UITableViewController {
             peer.state = PeerState.connecting.rawValue
             
             if let mcPeer = cell.peerID {
-                //self.appDelegate.mpcHandler.invitePeer(peerID: mcPeer)
                 self.appDelegate.ppService.invitePeer(peerID: mcPeer)
             }
         }

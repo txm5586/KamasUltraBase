@@ -70,6 +70,8 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
     }
     
     @IBAction func keepPlayingTapped(_ sender: Any) {
+        // The change turn is going to be performed only after the unwind works (on the unwind function)
+        // For "restarts", or normal flow, the turn changes at this same function
         //Global.shared.isMasterTurn = !Global.shared.isMasterTurn
         
         if Global.shared.isMaster {
@@ -81,20 +83,23 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
                 performSegue(withIdentifier: "unwindAsHostSegue", sender: self)
             } else {
                 Global.log(className: self.theClassName, msg: "Is going to restart as guest")
+                Global.shared.isMasterTurn = false
                 performSegue(withIdentifier: "restartAsGuestSegue", sender: self)
             }
             // IF NOT TURN
-            
         } else {
             // Check Turn
             // IF TURN
-            if Global.shared.isMasterTurn {
+            let isGuestTurn = !Global.shared.isMasterTurn
+            
+            if !isGuestTurn {
                 Global.log(className: self.theClassName, msg: "Is going to restart as host")
+                Global.shared.isMasterTurn = false
                 performSegue(withIdentifier: "restartAsHostSegue", sender: self)
-            // IF NOT TURN
-                // UNWIND AS GUEST
             } else {
-                Global.log(className: self.theClassName, msg: "Is going to uwind as guest")
+                // IF NOT TURN
+                // UNWIND AS GUEST
+                Global.log(className: self.theClassName, msg: "Is going to uwind as Guest")
                 performSegue(withIdentifier: "unwindAsGuestSegue", sender: self)
             }
         }

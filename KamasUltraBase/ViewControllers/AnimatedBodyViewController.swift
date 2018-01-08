@@ -54,6 +54,8 @@ class AnimatedBodyViewController: UIViewController {
         } else if gender == Constants.female {
             bodyImage.image = #imageLiteral(resourceName: "TransparentBodyWoman")
         }
+        
+        funcTap()
     }
     
     override func viewDidLoad() {
@@ -258,6 +260,7 @@ class AnimatedBodyViewController: UIViewController {
     }
     
     @IBAction func unwindToAnimatedBodyFlow(segue:UIStoryboardSegue) {
+        Global.log(className: self.theClassName, msg: "<-- Did Unwind to Animeted Body")
         Global.shared.isMasterTurn = !Global.shared.isMasterTurn
         /*if Global.shared.isMaster {
             Global.shared.isMasterTurn = true
