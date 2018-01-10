@@ -10,8 +10,19 @@ import UIKit
 import MultipeerConnectivity
 
 class WaitingForPartnerViewController: UIViewController {
-    private var appDelegate: AppDelegate!
+    
     @IBOutlet weak var waitingLabel: UILabel!
+    @IBOutlet weak var springingDot: UIImageView!
+    @IBOutlet weak var tipsLabel: UILabel!
+    
+    private var appDelegate: AppDelegate!
+    var timer: Timer? = nil
+    var countdown: Int = 5
+    var sexualTips: [String] = ["Touching your partner increases intimacy.",
+                                "Think about what surrounds and try to create an atmosphere for intimacy.",
+                                "Eating fruits while foreplay increases enjoyness",
+                                "Massaging the partner is a great way to increase intimacy and sensuality",
+                                "Try keeping eye contact with your partner.\n\nIt is a great way to connect and create more intimacy"]
     
     override func viewWillAppear(_ animated: Bool) {
         self.waitingLabel.text = Global.shared.connectedPeer?.displayName ?? " "
@@ -21,12 +32,19 @@ class WaitingForPartnerViewController: UIViewController {
         super.viewDidLoad()
         
         appDelegate = UIApplication.shared.delegate as! AppDelegate
-        animateDot()
-        countdownTick(self)
-        countdownTimer()
         
         NotificationCenter.default.addObserver(self, selector: #selector(WaitingForPartnerViewController.lostConnectionWithPeer(notification:)), name:Notifications.DidLostConnectionWithPeer, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(WaitingForPartnerViewController.didReceiveDataFromPeer(notification:)), name:Notifications.MPCDidReceiveData, object: nil);
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        animateDot()
+        countdownTick(self)
+        countdownTimer()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        timer?.invalidate()
     }
     
     // It could be a protocol!
@@ -60,7 +78,7 @@ class WaitingForPartnerViewController: UIViewController {
     }
     
     func countdownTimer() {
-        timer = Timer.scheduledTimer(timeInterval: 20, target: self, selector: #selector(WaitingForPartnerViewController.countdownTick), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(WaitingForPartnerViewController.countdownTick), userInfo: nil, repeats: true)
     }
     
     
@@ -74,7 +92,8 @@ class WaitingForPartnerViewController: UIViewController {
         })
         { (true) in
             // fade out
-            //sleep(15)
+            Thread.sleep(forTimeInterval: 4)
+            Thread.awakeFromNib()
             UIView.animate(withDuration: 2.5, animations: {
                 self.tipsLabel.alpha = 0.0
             })
@@ -99,12 +118,12 @@ class WaitingForPartnerViewController: UIViewController {
         Global.log(className: self.theClassName, msg: "<-- Did Unwind to Waiting")
         Global.shared.isMasterTurn = !Global.shared.isMasterTurn
         /*if Global.shared.isMaster {
-            Global.log(className: self.theClassName, msg: "** Is NOT my turn")
-            Global.shared.isMasterTurn = false
-        } else {
-            Global.log(className: self.theClassName, msg: "** IT IS MY TURN")
-            Global.shared.isMasterTurn = true
-        }*/
+         Global.log(className: self.theClassName, msg: "** Is NOT my turn")
+         Global.shared.isMasterTurn = false
+         } else {
+         Global.log(className: self.theClassName, msg: "** IT IS MY TURN")
+         Global.shared.isMasterTurn = true
+         }*/
     }
     
     func animateDot () -> Void {
@@ -124,13 +143,4 @@ class WaitingForPartnerViewController: UIViewController {
         springingDot.layer.add(animationGroup, forKey: "pulse")
     }
     
-    @IBOutlet weak var springingDot: UIImageView!
-    @IBOutlet weak var tipsLabel: UILabel!
-    var sexualTips: [String] = ["Touching your partner increases intimacy.",
-                                "Think about what surrounds and try to create an atmosphere for intimacy.",
-                                "Eating fruits while foreplay increases enjoyness",
-                                "Massaging the partner is a great way to increase intimacy and sensuality",
-                                "Try keeping eye contact with your partner.\n\nIt is a great way to connect and create more intimacy"]
-    var timer: Timer? = nil
-    var countdown: Int = 5
 }
