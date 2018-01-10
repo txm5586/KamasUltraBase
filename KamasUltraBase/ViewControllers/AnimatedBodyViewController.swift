@@ -43,6 +43,8 @@ class AnimatedBodyViewController: UIViewController {
     var e: NSNumber = 1.00
     
     override func viewWillAppear(_ animated: Bool) {
+        funcTap()
+        
         bodyPartLabel.text = BodyPart.Waist.rawValue
         bodyPartLabel.frame.origin.y = CGFloat(truncating: c) * UIScreen.main.bounds.height - 10
         
@@ -55,7 +57,12 @@ class AnimatedBodyViewController: UIViewController {
             bodyImage.image = #imageLiteral(resourceName: "TransparentBodyWoman")
         }
         
-        funcTap()
+        //Assing wave gif
+        //MoodConfig.changeMood(mood: <#T##Mood#>)
+        let mood = UserDefaults.standard.string(forKey: UserKey.mood)
+        
+        waveGif.loadGif(name: mood!)
+        waveGif.backgroundColor = UIColor.white
     }
     
     override func viewDidLoad() {
@@ -68,13 +75,6 @@ class AnimatedBodyViewController: UIViewController {
         //Crate the tap gesture
         let tap = UITapGestureRecognizer(target: self, action: #selector(funcTap))
         self.bodyVIew.addGestureRecognizer(tap) //Add the tap gesture recognizerer to the body
-        
-        //Assing wave gif
-        //MoodConfig.changeMood(mood: <#T##Mood#>)
-        let mood = UserDefaults.standard.string(forKey: UserKey.mood)
-        
-        waveGif.loadGif(name: mood!)
-        waveGif.backgroundColor = UIColor.white
         
         NotificationCenter.default.addObserver(self, selector: #selector(AnimatedBodyViewController.lostConnectionWithPeer(notification:)), name:Notifications.DidLostConnectionWithPeer, object: nil);
     }

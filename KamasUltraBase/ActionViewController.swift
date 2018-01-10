@@ -10,6 +10,7 @@ import UIKit
 import MultipeerConnectivity
 
 class ActionViewController: UIViewController, CAAnimationDelegate {
+    var isTouchActive = false
     
     var gradientLayer: CAGradientLayer!
     var fromValue = [MoodConfig.gradientColor1,
@@ -22,6 +23,20 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
                    MoodConfig.gradientColor2]
     
     private var appDelegate: AppDelegate!
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if Global.isHost() {
+            self.isTouchActive = false
+        } else {
+            let dataInfo = DataProtocol.prepareToChangeToAction()
+            let _ = self.appDelegate.ppService.send(dataInfo: dataInfo)
+            self.isTouchActive = true
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.isTouchActive = false
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,39 +63,11 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
             let data = String(describing:dictionary["data"]!)
             if data == DataProtocol.actionScreenFinished {
                 findRouteForSegue()
+            } else if data == DataProtocol.guestChangedToAction {
+                self.isTouchActive = true
             }
         }
     }
-    /*
-    func skipActionScreen() {
-        
-        Global.shared.isMasterTurn = !Global.shared.isMasterTurn
-        
-        if Global.shared.isMaster {
-            // Check Turn
-            // IF TURN
-            // UNWIND AS HOST
-            if Global.shared.isMasterTurn {
-                print("----- Is going unwind as Host ------")
-                performSegue(withIdentifier: "unwindAsHostSegue", sender: self)
-            } else {
-                print("----- Is going to restard as guest ------")
-                performSegue(withIdentifier: "restartAsGuestSegue", sender: self)
-            }
-            // IF NOT TURN
-            
-        } else {
-            // Check Turn
-            // IF TURN
-            if !Global.shared.isMasterTurn {
-                performSegue(withIdentifier: "restartAsHostSegue", sender: self)
-                // IF NOT TURN
-                // UNWIND AS GUEST
-            } else {
-                performSegue(withIdentifier: "unwindAsGuestSegue", sender: self)
-            }
-        }
-    }*/
     
     @objc func lostConnectionWithPeer(notification: NSNotification) {
         unwindByLostOfConnection()
@@ -128,6 +115,10 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
     }
     
     @IBAction func keepPlayingTapped(_ sender: Any) {
+        if !self.isTouchActive {
+            return
+        }
+        
         let dataInfo = DataProtocol.prepareToFinishAction()
         let _ = self.appDelegate.ppService.send(dataInfo: dataInfo)
         

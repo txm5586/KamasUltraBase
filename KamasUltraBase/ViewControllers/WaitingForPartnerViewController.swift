@@ -98,13 +98,6 @@ class WaitingForPartnerViewController: UIViewController {
     @IBAction func unwindToWaitingBodyFlow(segue:UIStoryboardSegue) {
         Global.log(className: self.theClassName, msg: "<-- Did Unwind to Waiting")
         Global.shared.isMasterTurn = !Global.shared.isMasterTurn
-        /*if Global.shared.isMaster {
-            Global.log(className: self.theClassName, msg: "** Is NOT my turn")
-            Global.shared.isMasterTurn = false
-        } else {
-            Global.log(className: self.theClassName, msg: "** IT IS MY TURN")
-            Global.shared.isMasterTurn = true
-        }*/
     }
     
     func animateDot () -> Void {
