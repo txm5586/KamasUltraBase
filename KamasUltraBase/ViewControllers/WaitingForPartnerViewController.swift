@@ -20,7 +20,7 @@ class WaitingForPartnerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        appDelegate = UIApplication.shared.delegate as! AppDelegate
+        self.appDelegate = UIApplication.shared.delegate as! AppDelegate
         animateDot()
         countdownTick(self)
         countdownTimer()

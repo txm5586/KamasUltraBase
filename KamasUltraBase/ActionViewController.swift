@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MultipeerConnectivity
 
 class ActionViewController: UIViewController, CAAnimationDelegate {
     
@@ -20,14 +21,35 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
                    MoodConfig.gradientColor1,
                    MoodConfig.gradientColor2]
     
+    private var appDelegate: AppDelegate!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.appDelegate = UIApplication.shared.delegate as! AppDelegate
 
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(ActionViewController.lostConnectionWithPeer(notification:)), name:Notifications.DidLostConnectionWithPeer, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(ActionViewController.didReceiveDataFromPeer(notification:)), name:Notifications.MPCDidReceiveData, object: nil);
         
         changeBackground()
         transitionGradients()
+    }
+    
+    @objc func didReceiveDataFromPeer(notification: NSNotification) {
+        Global.log(className: self.theClassName, msg: "Received Data")
+        let userInfo = NSDictionary(dictionary: notification.userInfo!)
+        
+        let peerID = userInfo.object(forKey: Notifications.keyPeerID) as! MCPeerID
+        let data = userInfo.object(forKey: Notifications.keyData) as! String
+        
+        if let peer = Global.shared.connectedPeer, peer == peerID {
+            let dictionary = DataProtocol.decodeData(data: data)
+            let data = String(describing:dictionary["data"]!)
+            if data == DataProtocol.actionScreenFinished {
+                findRouteForSegue()
+            }
+        }
     }
     /*
     func skipActionScreen() {
@@ -69,7 +91,7 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
         performSegue(withIdentifier: "unwindFromActionToPlay", sender: self)
     }
     
-    @IBAction func keepPlayingTapped(_ sender: Any) {
+    func findRouteForSegue() {
         // The change turn is going to be performed only after the unwind works (on the unwind function)
         // For "restarts", or normal flow, the turn changes at this same function
         //Global.shared.isMasterTurn = !Global.shared.isMasterTurn
@@ -77,7 +99,7 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
         if Global.shared.isMaster {
             // Check Turn
             // IF TURN
-                // UNWIND AS HOST
+            // UNWIND AS HOST
             if !Global.shared.isMasterTurn {
                 Global.log(className: self.theClassName, msg: "Is going to unwind as Host")
                 performSegue(withIdentifier: "unwindAsHostSegue", sender: self)
@@ -103,6 +125,13 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
                 performSegue(withIdentifier: "unwindAsGuestSegue", sender: self)
             }
         }
+    }
+    
+    @IBAction func keepPlayingTapped(_ sender: Any) {
+        let dataInfo = DataProtocol.prepareToFinishAction()
+        let _ = self.appDelegate.ppService.send(dataInfo: dataInfo)
+        
+        findRouteForSegue()
     }
     
     func changeBackground () {
