@@ -17,18 +17,12 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NKq-ph-93E">
-                                <rect key="frame" x="147" y="318" width="80" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Keep Going"/>
-                                <connections>
-                                    <action selector="keepPlayingTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="u6m-zV-7Nw"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="E5R-gU-tOO" appends="YES" id="q4l-73-zKx"/>
+                        </connections>
                     </view>
                     <connections>
                         <segue destination="yZw-bF-9oe" kind="show" identifier="restartAsHostSegue" id="tIg-Ta-p2O"/>
@@ -40,6 +34,11 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
                 <exit id="xz4-hp-7Rt" userLabel="Exit" sceneMemberID="exit"/>
+                <tapGestureRecognizer id="E5R-gU-tOO">
+                    <connections>
+                        <action selector="keepPlayingTapped:" destination="BYZ-38-t0r" id="5dm-LH-gyv"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
         </scene>
         <!--FlowHost-->
@@ -48,7 +47,7 @@
                 <viewControllerPlaceholder storyboardName="FlowHost" id="yZw-bF-9oe" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nEZ-Uo-CIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1191" y="13"/>
+            <point key="canvasLocation" x="817" y="325"/>
         </scene>
         <!--FlowGuest-->
         <scene sceneID="cY3-dQ-k94">
@@ -56,7 +55,7 @@
                 <viewControllerPlaceholder storyboardName="FlowGuest" id="SKS-57-DEM" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rob-Lf-EK1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1184" y="138"/>
+            <point key="canvasLocation" x="792" y="463"/>
         </scene>
     </scenes>
 </document>

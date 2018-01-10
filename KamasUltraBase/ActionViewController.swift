@@ -7,8 +7,10 @@
 //
 
 import UIKit
+import MultipeerConnectivity
 
 class ActionViewController: UIViewController, CAAnimationDelegate {
+    var isTouchActive = false
     
     var gradientLayer: CAGradientLayer!
     var fromValue = [MoodConfig.gradientColor1,
@@ -20,45 +22,52 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
                    MoodConfig.gradientColor1,
                    MoodConfig.gradientColor2]
     
+    private var appDelegate: AppDelegate!
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if Global.isHost() {
+            self.isTouchActive = false
+        } else {
+            let dataInfo = DataProtocol.prepareToChangeToAction()
+            let _ = self.appDelegate.ppService.send(dataInfo: dataInfo)
+            self.isTouchActive = true
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.isTouchActive = false
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.appDelegate = UIApplication.shared.delegate as! AppDelegate
 
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(ActionViewController.lostConnectionWithPeer(notification:)), name:Notifications.DidLostConnectionWithPeer, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(ActionViewController.didReceiveDataFromPeer(notification:)), name:Notifications.MPCDidReceiveData, object: nil);
         
         changeBackground()
         transitionGradients()
     }
-    /*
-    func skipActionScreen() {
+    
+    @objc func didReceiveDataFromPeer(notification: NSNotification) {
+        Global.log(className: self.theClassName, msg: "Received Data")
+        let userInfo = NSDictionary(dictionary: notification.userInfo!)
         
-        Global.shared.isMasterTurn = !Global.shared.isMasterTurn
+        let peerID = userInfo.object(forKey: Notifications.keyPeerID) as! MCPeerID
+        let data = userInfo.object(forKey: Notifications.keyData) as! String
         
-        if Global.shared.isMaster {
-            // Check Turn
-            // IF TURN
-            // UNWIND AS HOST
-            if Global.shared.isMasterTurn {
-                print("----- Is going unwind as Host ------")
-                performSegue(withIdentifier: "unwindAsHostSegue", sender: self)
-            } else {
-                print("----- Is going to restard as guest ------")
-                performSegue(withIdentifier: "restartAsGuestSegue", sender: self)
-            }
-            // IF NOT TURN
-            
-        } else {
-            // Check Turn
-            // IF TURN
-            if !Global.shared.isMasterTurn {
-                performSegue(withIdentifier: "restartAsHostSegue", sender: self)
-                // IF NOT TURN
-                // UNWIND AS GUEST
-            } else {
-                performSegue(withIdentifier: "unwindAsGuestSegue", sender: self)
+        if let peer = Global.shared.connectedPeer, peer == peerID {
+            let dictionary = DataProtocol.decodeData(data: data)
+            let data = String(describing:dictionary["data"]!)
+            if data == DataProtocol.actionScreenFinished {
+                findRouteForSegue()
+            } else if data == DataProtocol.guestChangedToAction {
+                self.isTouchActive = true
             }
         }
-    }*/
+    }
     
     @objc func lostConnectionWithPeer(notification: NSNotification) {
         unwindByLostOfConnection()
@@ -69,7 +78,7 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
         performSegue(withIdentifier: "unwindFromActionToPlay", sender: self)
     }
     
-    @IBAction func keepPlayingTapped(_ sender: Any) {
+    func findRouteForSegue() {
         // The change turn is going to be performed only after the unwind works (on the unwind function)
         // For "restarts", or normal flow, the turn changes at this same function
         //Global.shared.isMasterTurn = !Global.shared.isMasterTurn
@@ -77,7 +86,7 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
         if Global.shared.isMaster {
             // Check Turn
             // IF TURN
-                // UNWIND AS HOST
+            // UNWIND AS HOST
             if !Global.shared.isMasterTurn {
                 Global.log(className: self.theClassName, msg: "Is going to unwind as Host")
                 performSegue(withIdentifier: "unwindAsHostSegue", sender: self)
@@ -103,6 +112,17 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
                 performSegue(withIdentifier: "unwindAsGuestSegue", sender: self)
             }
         }
+    }
+    
+    @IBAction func keepPlayingTapped(_ sender: Any) {
+        if !self.isTouchActive {
+            return
+        }
+        
+        let dataInfo = DataProtocol.prepareToFinishAction()
+        let _ = self.appDelegate.ppService.send(dataInfo: dataInfo)
+        
+        findRouteForSegue()
     }
     
     func changeBackground () {

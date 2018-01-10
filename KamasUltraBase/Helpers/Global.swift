@@ -65,6 +65,10 @@ class Global {
     static func log(className: String, msg: String) {
         print("--- [\(className)] \(msg)")
     }
+    
+    static func isHost() -> Bool {
+        return (Global.shared.isMaster && Global.shared.isMasterTurn) || (!Global.shared.isMaster && !Global.shared.isMasterTurn)
+    }
 }
 
 // MARK: Constatants
@@ -244,6 +248,7 @@ public class DataProtocol {
     static let gameStarted = "GS"
     static let actionSent = "AS"
     static let actionScreenFinished = "AF"
+    static let guestChangedToAction = "GCTA"
     
     static func prepareToStartGame() -> String {
         return gameStarted
@@ -251,6 +256,10 @@ public class DataProtocol {
     
     static func prepareToFinishAction() -> String {
         return actionScreenFinished
+    }
+    
+    static func prepareToChangeToAction() -> String {
+        return guestChangedToAction
     }
     
     static func prepareToSendAction(action: Action, body: BodyPart) -> String {
