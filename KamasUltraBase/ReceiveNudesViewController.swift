@@ -30,7 +30,10 @@ class ReceiveNudesViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(ReceiveNudesViewController.lostConnectionWithPeer(notification:)), name:Notifications.DidLostConnectionWithPeer, object: nil);
         
         createGradientLayer()
-        
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        return true
     }
     
     var gradientLayer: CAGradientLayer!

@@ -45,7 +45,6 @@ class AnimatedBodyViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         funcTap()
         
-        bodyPartLabel.text = BodyPart.Waist.rawValue
         bodyPartLabel.frame.origin.y = CGFloat(truncating: c) * UIScreen.main.bounds.height - 10
         
         let userDefaults = UserDefaults.standard

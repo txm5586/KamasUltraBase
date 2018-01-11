@@ -69,6 +69,10 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
         }
     }
     
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
     @objc func lostConnectionWithPeer(notification: NSNotification) {
         unwindByLostOfConnection()
     }
