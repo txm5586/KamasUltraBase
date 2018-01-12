@@ -42,7 +42,7 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
         super.viewDidLoad()
         
         self.appDelegate = UIApplication.shared.delegate as! AppDelegate
-
+        
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(ActionViewController.lostConnectionWithPeer(notification:)), name:Notifications.DidLostConnectionWithPeer, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(ActionViewController.didReceiveDataFromPeer(notification:)), name:Notifications.MPCDidReceiveData, object: nil);
@@ -50,6 +50,7 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
         changeBackground()
         transitionGradients()
     }
+
     
     @objc func didReceiveDataFromPeer(notification: NSNotification) {
         Global.log(className: self.theClassName, msg: "Received Data")
@@ -96,25 +97,38 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
                 performSegue(withIdentifier: "unwindAsHostSegue", sender: self)
             } else {
                 Global.log(className: self.theClassName, msg: "Is going to restart as guest")
-                Global.shared.isMasterTurn = false
-                performSegue(withIdentifier: "restartAsGuestSegue", sender: self)
+                Global.shared.isMasterTurn = !Global.shared.isMasterTurn
+                if Global.shared.turnCounter == 0 {
+                    Global.shared.turnCounter += 1
+                    performSegue(withIdentifier: "restartAsGuestSegue", sender: self)
+                }
+                else {
+                    performSegue(withIdentifier: "unwindAsGuestSegue", sender: self)
+                }
             }
             // IF NOT TURN
         } else {
             // Check Turn
             // IF TURN
-            let isGuestTurn = !Global.shared.isMasterTurn
             
-            if !isGuestTurn {
+            if !Global.shared.isGuestTurn {
                 Global.log(className: self.theClassName, msg: "Is going to restart as host")
-                Global.shared.isMasterTurn = false
-                performSegue(withIdentifier: "restartAsHostSegue", sender: self)
+                Global.shared.isGuestTurn = !Global.shared.isGuestTurn
+                if Global.shared.turnCounter == 0 {
+                    Global.shared.turnCounter += 1
+                    performSegue(withIdentifier: "restartAsHostSegue", sender: self)
+                }
+                else {
+                    performSegue(withIdentifier: "unwindAsHostSegue", sender: self)
+                }
+                
             } else {
                 // IF NOT TURN
                 // UNWIND AS GUEST
                 Global.log(className: self.theClassName, msg: "Is going to uwind as Guest")
                 performSegue(withIdentifier: "unwindAsGuestSegue", sender: self)
             }
+            
         }
     }
     
@@ -163,5 +177,5 @@ class ActionViewController: UIViewController, CAAnimationDelegate {
     @IBAction func unwindToActionFlow(segue:UIStoryboardSegue) {
         
     }
-
+    
 }

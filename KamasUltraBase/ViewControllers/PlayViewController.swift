@@ -49,7 +49,7 @@ class PlayViewController: UIViewController, SettingsTableViewControllerDelegate 
         appDelegate = UIApplication.shared.delegate as! AppDelegate
         self.navigationController?.isNavigationBarHidden = true
         
-        Global.shared.isMasterTurn = true
+//        Global.shared.isMasterTurn = true
         
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(PlayViewController.didReceiveData(notification:)), name:Notifications.MPCDidReceiveData, object: nil);

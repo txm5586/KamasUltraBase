@@ -43,7 +43,8 @@ class Global {
     var connectedPeer : MCPeerID?
     var isMaster : Bool = false
     var isMasterTurn: Bool = true
-    
+    var isGuestTurn: Bool = false
+    var turnCounter: Int = 0
     var selectedAction : Action!
     var selectedBodyPart : BodyPart!
     

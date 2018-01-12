@@ -116,7 +116,7 @@ class WaitingForPartnerViewController: UIViewController {
     
     @IBAction func unwindToWaitingBodyFlow(segue:UIStoryboardSegue) {
         Global.log(className: self.theClassName, msg: "<-- Did Unwind to Waiting")
-        Global.shared.isMasterTurn = !Global.shared.isMasterTurn
+        Global.shared.isGuestTurn = !Global.shared.isGuestTurn
         /*if Global.shared.isMaster {
          Global.log(className: self.theClassName, msg: "** Is NOT my turn")
          Global.shared.isMasterTurn = false
